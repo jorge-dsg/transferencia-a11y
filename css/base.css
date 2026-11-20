@@ -211,8 +211,8 @@ body {
 /* Fila "etiqueta ... valor" (sirve para <div>, <dt>/<dd>, etc.) */
 .fila { display: flex; justify-content: space-between; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--line); }
 .fila:last-child { border-bottom: 0; }
-.fila > :first-child { color: var(--muted); }
-.fila > :last-child  { font-weight: 600; text-align: right; }
+.fila-k { color: var(--muted); }
+.fila-v { font-weight: 600; text-align: right; }
 
 .exito  { text-align: center; }
 .check  { display: block; width: 88px; height: 88px; margin: 0 auto 16px; }

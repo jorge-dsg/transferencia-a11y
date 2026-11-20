@@ -1,27 +1,74 @@
 <!DOCTYPE html>
+<!-- Portada. Estilos: css/portada.css -->
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Prueba de accesibilidad – Flujo de transferencia</title>
+  <title>Prueba de lector de pantalla – Flujo de transferencia</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/portada.css">
 </head>
 <body>
-  <main>
-    <div class="hero">
+  <a class="skip" href="#contenido">Saltar al contenido principal</a>
+
+  <header class="hero">
+    <div class="envoltura">
+      <p class="sello">
+        <svg width="28" height="28" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect width="32" height="32" rx="9" fill="#fff"/><path d="M9 13h13m0 0-4-4m4 4-4 4M23 19H10m0 0 4-4m-4 4 4 4" stroke="#2c3396" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Banco Demo · Prueba
+      </p>
       <h1>Prueba de lector de pantalla: flujo de transferencia</h1>
-      <p>Dos versiones del mismo flujo bancario simulado: Inicio → Datos → Confirmar → Listo. Ningún dato es real.</p>
+      <p class="intro">Dos versiones del mismo flujo bancario simulado. Recórrelas con VoiceOver, TalkBack o NVDA y compara la experiencia. Ningún dato es real.</p>
     </div>
-    <div class="sheet">
-      <ul>
-        <li><a href="/accesible/"><span class="ic" aria-hidden="true">A</span><span>Versión A: accesible <span class="t">Cumple pautas WCAG 2.2 AA</span></span></a></li>
-        <li><a href="/no-accesible/"><span class="ic no" aria-hidden="true">B</span><span>Versión B: no accesible <span class="t">Contiene barreras intencionales</span></span></a></li>
-      </ul>
+  </header>
+
+  <main id="contenido" class="envoltura">
+    <h2 class="sr-only">Elige una versión</h2>
+
+    <ul class="versiones">
+      <li>
+        <a class="version" href="accesible/">
+          <span class="v-icono v-ok" aria-hidden="true">
+            <svg width="26" height="26" viewBox="0 0 24 24" focusable="false"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="v-texto">
+            <span class="v-titulo">Versión A: accesible</span>
+            <span class="v-desc">Cumple pautas WCAG 2.2 AA</span>
+          </span>
+          <svg class="v-flecha" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </li>
+      <li>
+        <a class="version" href="no-accesible/">
+          <span class="v-icono v-no" aria-hidden="true">
+            <svg width="26" height="26" viewBox="0 0 24 24" focusable="false"><path d="M12 6v7M12 17.5v.5" stroke="currentColor" stroke-width="2.8" fill="none" stroke-linecap="round"/></svg>
+          </span>
+          <span class="v-texto">
+            <span class="v-titulo">Versión B: no accesible</span>
+            <span class="v-desc">Contiene barreras intencionales</span>
+          </span>
+          <svg class="v-flecha" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </li>
+    </ul>
+
+    <section class="recorrido" aria-labelledby="t-recorrido">
+      <h2 id="t-recorrido">Qué vas a recorrer</h2>
+      <ol class="etapas">
+        <li><span class="n" aria-hidden="true">1</span> Inicio: saldo y últimos movimientos</li>
+        <li><span class="n" aria-hidden="true">2</span> Datos: destinatario y monto</li>
+        <li><span class="n" aria-hidden="true">3</span> Confirmar la transferencia</li>
+        <li><span class="n" aria-hidden="true">4</span> Listo: comprobante</li>
+      </ol>
       <p class="nota">Las dos versiones se ven casi idénticas; la diferencia está en el código.</p>
-    </div>
+    </section>
   </main>
+
+  <footer class="pie envoltura">
+    <p>Proyecto de práctica de accesibilidad web. Datos y cuentas ficticios.</p>
+  </footer>
 </body>
 </html>

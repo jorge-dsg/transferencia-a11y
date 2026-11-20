@@ -160,11 +160,12 @@
 
       <div class="sheet">
         <!-- Todo lo que se ve en pantalla es también lo que se lee, en el mismo orden -->
+        <!-- Cada fila se lee como una frase: "Monto, nueve mil pesos" (lo llena accesible.js) -->
         <div class="lista-filas">
-          <p class="fila"><span>Destinatario</span><span id="c-dest"></span></p>
-          <p class="fila"><span>Monto</span><span id="c-monto"></span></p>
-          <p class="fila"><span>Desde</span><span><span aria-hidden="true">Cuenta corriente ••4821</span><span class="sr-only">Cuenta corriente terminada en 4 8 2 1</span></span></p>
-          <p class="fila"><span>Mensaje</span><span id="c-msg"></span></p>
+          <p class="fila" id="fila-dest"><span class="sr-only"></span><span class="fila-k" aria-hidden="true">Destinatario</span><span class="fila-v" aria-hidden="true"></span></p>
+          <p class="fila" id="fila-monto"><span class="sr-only"></span><span class="fila-k" aria-hidden="true">Monto</span><span class="fila-v" aria-hidden="true"></span></p>
+          <p class="fila"><span class="sr-only">Desde, Cuenta corriente terminada en 4 8 2 1</span><span class="fila-k" aria-hidden="true">Desde</span><span class="fila-v" aria-hidden="true">Cuenta corriente ••4821</span></p>
+          <p class="fila" id="fila-msg"><span class="sr-only"></span><span class="fila-k" aria-hidden="true">Mensaje</span><span class="fila-v" aria-hidden="true"></span></p>
         </div>
 
         <div style="margin-top:20px">
@@ -193,10 +194,10 @@
         <h2 class="h2">Comprobante</h2>
         <div class="comprobante">
           <div class="lista-filas">
-            <p class="fila"><span>Monto</span><span id="r-monto"></span></p>
-            <p class="fila"><span>Destinatario</span><span id="r-dest"></span></p>
-            <p class="fila"><span>Fecha</span><span id="r-fecha"></span></p>
-            <p class="fila"><span>Número de comprobante</span><span id="comprobante"></span></p>
+            <p class="fila" id="r-fila-monto"><span class="sr-only"></span><span class="fila-k" aria-hidden="true">Monto</span><span class="fila-v" aria-hidden="true"></span></p>
+            <p class="fila" id="r-fila-dest"><span class="sr-only"></span><span class="fila-k" aria-hidden="true">Destinatario</span><span class="fila-v" aria-hidden="true"></span></p>
+            <p class="fila" id="r-fila-fecha"><span class="sr-only"></span><span class="fila-k" aria-hidden="true">Fecha</span><span class="fila-v" aria-hidden="true"></span></p>
+            <p class="fila" id="r-fila-comp"><span class="sr-only"></span><span class="fila-k" aria-hidden="true">Número de comprobante</span><span class="fila-v" aria-hidden="true"></span></p>
           </div>
         </div>
         <button type="button" class="btn btn-primario" id="btn-inicio">Volver al inicio</button>

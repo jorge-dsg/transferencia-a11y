@@ -102,10 +102,10 @@
         <div class="pasos"><div class="paso hecho">1. Datos</div><div class="paso on">2. Confirmar</div><div class="paso">3. Listo</div></div>
       </div>
       <div class="sheet">
-        <div class="fila"><div>Destinatario</div><div id="cd"></div></div>
-        <div class="fila"><div>Monto</div><div id="cm"></div></div>
-        <div class="fila"><div>Desde</div><div>Cuenta corriente ••4821</div></div>
-        <div class="fila"><div>Mensaje</div><div id="cs"></div></div>
+        <div class="fila"><div class="fila-k">Destinatario</div><div class="fila-v" id="cd"></div></div>
+        <div class="fila"><div class="fila-k">Monto</div><div class="fila-v" id="cm"></div></div>
+        <div class="fila"><div class="fila-k">Desde</div><div class="fila-v">Cuenta corriente ••4821</div></div>
+        <div class="fila"><div class="fila-k">Mensaje</div><div class="fila-v" id="cs"></div></div>
         <div style="margin-top:20px">
           <div class="btn btn-primario" onclick="confirmar()">Confirmar y transferir</div>
           <div class="btn btn-sec" onclick="ir(1)">Volver y editar datos</div>
@@ -126,10 +126,10 @@
         <div id="txt" style="margin-bottom:16px"></div>
         <div class="h2">Comprobante</div>
         <div class="comprobante">
-          <div class="fila"><div>Monto</div><div id="r-monto"></div></div>
-          <div class="fila"><div>Destinatario</div><div id="r-dest"></div></div>
-          <div class="fila"><div>Fecha</div><div id="r-fecha"></div></div>
-          <div class="fila"><div>Número de comprobante</div><div id="r-comp"></div></div>
+          <div class="fila"><div class="fila-k">Monto</div><div class="fila-v" id="r-monto"></div></div>
+          <div class="fila"><div class="fila-k">Destinatario</div><div class="fila-v" id="r-dest"></div></div>
+          <div class="fila"><div class="fila-k">Fecha</div><div class="fila-v" id="r-fecha"></div></div>
+          <div class="fila"><div class="fila-k">Número de comprobante</div><div class="fila-v" id="r-comp"></div></div>
         </div>
         <div class="btn btn-primario" onclick="reiniciar(0)">Volver al inicio</div>
         <div class="btn btn-sec" onclick="reiniciar(1)">Hacer otra transferencia</div>
