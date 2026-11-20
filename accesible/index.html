@@ -38,10 +38,13 @@
         <p class="sub-hero">Este es el resumen de tu cuenta.</p>
 
         <div class="saldo-card">
-          <p class="lbl">Saldo total</p>
-          <!-- Visual: "$1.250.000" · Lector: "un millón doscientos cincuenta mil pesos" -->
-          <p class="saldo-val"><span aria-hidden="true" id="saldo-vis"></span><span class="sr-only" id="saldo-voz"></span></p>
-          <p class="cuenta-sub"><span aria-hidden="true">Cuenta corriente terminada en 4821</span><span class="sr-only">Cuenta corriente terminada en 4 8 2 1</span></p>
+          <!-- Una sola frase para el lector: "Saldo total: … pesos. Cuenta corriente terminada en 4 8 2 1." (la llena accesible.js) -->
+          <p class="sr-only" id="saldo-voz"></p>
+          <div aria-hidden="true">
+            <p class="lbl">Saldo total</p>
+            <p class="saldo-val" id="saldo-vis"></p>
+            <p class="cuenta-sub">Cuenta corriente terminada en 4821</p>
+          </div>
           <button type="button" class="btn btn-claro" id="btn-ir">
             <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 17 17 7M9 7h8v8" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
             Transferir
@@ -112,7 +115,10 @@
           <div class="campo">
             <label class="etiqueta" for="monto">Monto a transferir, en pesos <span class="req">(obligatorio)</span></label>
             <span class="ayuda" id="ayuda-monto"></span>
-            <input class="input" id="monto" type="text" inputmode="numeric" autocomplete="off" maxlength="12" placeholder="$0" required aria-describedby="ayuda-monto monto-letras err-monto">
+            <div class="input-peso">
+              <span class="signo-peso" aria-hidden="true">$</span>   <!-- decorativo: el lector no dice "dólar" -->
+              <input class="input" id="monto" type="text" inputmode="numeric" autocomplete="off" maxlength="11" placeholder="0" required aria-describedby="ayuda-monto monto-letras err-monto">
+            </div>
             <span class="ayuda" id="monto-letras"></span>   <!-- monto en palabras, lo llena accesible.js -->
             <p class="error-campo" id="err-monto"></p>
           </div>
@@ -185,7 +191,7 @@
             <div class="fila"><dt>Monto</dt><dd id="r-monto"></dd></div>
             <div class="fila"><dt>Destinatario</dt><dd id="r-dest"></dd></div>
             <div class="fila"><dt>Fecha</dt><dd id="r-fecha"></dd></div>
-            <div class="fila"><dt>N.º de comprobante</dt><dd id="comprobante"></dd></div>
+            <div class="fila"><dt>Número de comprobante</dt><dd id="comprobante"></dd></div>
           </dl>
         </div>
         <button type="button" class="btn btn-primario" id="btn-inicio">Volver al inicio</button>
@@ -193,7 +199,7 @@
       </div>
     </section>
 
-    <!-- Región aria-live: aquí se anuncia "Procesando…" -->
+    <!-- Región aria-live: aquí se anuncia "Transfiriendo…" -->
     <div class="sr-only" role="status" aria-live="polite" id="anuncio"></div>
   </main>
 

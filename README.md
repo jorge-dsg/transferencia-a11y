@@ -44,7 +44,7 @@ Flujo: **Inicio** (saldo y últimos movimientos) → botón *Transferir* → **D
 - Etiquetas `<label>` visibles, ayudas con `aria-describedby`, campos obligatorios anunciados
 - Contactos elegidos con `<fieldset>`/`<legend>` y radios nativos; el nombre y la cuenta se asignan con `aria-labelledby`/`aria-describedby` y lo visual va `aria-hidden`, para que no se lea dos veces; "••4821" se lee "terminada en 4821" (no "viñeta")
 - Errores en texto (no solo color), `aria-invalid`, resumen de errores con foco y enlaces a cada campo
-- Estado "Procesando…" anunciado con `aria-live` (el botón usa `aria-disabled` para no perder el foco)
+- Estado "Transfiriendo…" anunciado con `aria-live` (el botón usa `aria-disabled` para no perder el foco)
 - Montos leídos como "50.000 pesos"; signo +/− y texto "más/menos" en los movimientos
 - Botones reales con nombre accesible (también los de solo icono)
 - Contraste AA, foco visible, objetivos táctiles ≥ 44 px, zoom permitido, `prefers-reduced-motion`
