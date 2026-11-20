@@ -32,7 +32,7 @@
   <main class="main" id="contenido">
 
     <!-- ============ PANTALLA 0: INICIO ============ -->
-    <section class="vista" id="v0" aria-labelledby="t0">
+    <section class="vista" id="v0">
       <div class="hero">
         <h1 class="titulo" id="t0" tabindex="-1">Hola, Jorge</h1>
         <p class="sub-hero">Este es el resumen de tu cuenta.</p>
@@ -60,7 +60,7 @@
 
 
     <!-- ============ PANTALLA 1: DATOS ============ -->
-    <section class="vista" id="v1" aria-labelledby="t1" hidden>
+    <section class="vista" id="v1" hidden>
       <div class="hero">
         <div class="hero-fila">
           <button type="button" class="atras" data-volver="0" aria-label="Volver al inicio">
@@ -111,23 +111,27 @@
             <p class="error-campo" id="err-destinatario"></p>
           </fieldset>
 
-          <!-- Monto: mismo formato que todos los campos (etiqueta, ayuda, input, error) -->
+          <!-- Los campos no repiten su etiqueta: el texto visible va aria-hidden y el input
+               toma su nombre y descripción con aria-labelledby / aria-describedby. -->
+
+          <!-- Monto -->
           <div class="campo">
-            <label class="etiqueta" for="monto">Monto a transferir, en pesos <span class="req">(obligatorio)</span></label>
-            <span class="ayuda" id="ayuda-monto"></span>
+            <label class="etiqueta" for="monto" id="et-monto" aria-hidden="true">Monto a transferir, en pesos <span class="req">(obligatorio)</span></label>
+            <span class="ayuda" id="ayuda-monto" aria-hidden="true"></span>
+            <span hidden id="ayuda-monto-voz"></span>   <!-- misma ayuda con el monto en palabras; la llena accesible.js -->
             <div class="input-peso">
               <span class="signo-peso" aria-hidden="true">$</span>   <!-- decorativo: el lector no dice "dólar" -->
-              <input class="input" id="monto" type="text" inputmode="numeric" autocomplete="off" maxlength="11" placeholder="0" required aria-describedby="ayuda-monto monto-letras err-monto">
+              <input class="input" id="monto" type="text" inputmode="numeric" autocomplete="off" maxlength="11" placeholder="0" required aria-labelledby="et-monto" aria-describedby="ayuda-monto-voz monto-letras err-monto">
             </div>
-            <span class="ayuda" id="monto-letras"></span>   <!-- monto en palabras, lo llena accesible.js -->
+            <span class="ayuda" id="monto-letras" aria-hidden="true"></span>   <!-- monto en palabras, lo llena accesible.js -->
             <p class="error-campo" id="err-monto"></p>
           </div>
 
           <!-- Mensaje (opcional) -->
           <div class="campo">
-            <label class="etiqueta" for="mensaje">Mensaje para el destinatario <span class="req">(opcional)</span></label>
-            <span class="ayuda" id="ayuda-msg">Máximo 40 caracteres.</span>
-            <input class="input" id="mensaje" type="text" maxlength="40" aria-describedby="ayuda-msg">
+            <label class="etiqueta" for="mensaje" id="et-mensaje" aria-hidden="true">Mensaje para el destinatario <span class="req">(opcional)</span></label>
+            <span class="ayuda" id="ayuda-msg" aria-hidden="true">Máximo 40 caracteres.</span>
+            <input class="input" id="mensaje" type="text" maxlength="40" aria-labelledby="et-mensaje" aria-describedby="ayuda-msg">
           </div>
 
           <button type="submit" class="btn btn-primario">Continuar</button>
@@ -137,7 +141,7 @@
 
 
     <!-- ============ PANTALLA 2: CONFIRMAR ============ -->
-    <section class="vista" id="v2" aria-labelledby="t2" hidden>
+    <section class="vista" id="v2" hidden>
       <div class="hero">
         <div class="hero-fila">
           <button type="button" class="atras" data-volver="1" aria-label="Volver y editar datos">
@@ -156,10 +160,10 @@
       <div class="sheet">
         <!-- Todo lo que se ve en pantalla es también lo que se lee, en el mismo orden -->
         <div class="lista-filas">
-          <p class="fila"><span>Destinatario<span class="sr-only">:</span></span><span id="c-dest"></span></p>
-          <p class="fila"><span>Monto<span class="sr-only">:</span></span><span id="c-monto"></span></p>
-          <p class="fila"><span>Desde<span class="sr-only">:</span></span><span><span aria-hidden="true">Cuenta corriente ••4821</span><span class="sr-only">Cuenta corriente terminada en 4 8 2 1</span></span></p>
-          <p class="fila"><span>Mensaje<span class="sr-only">:</span></span><span id="c-msg"></span></p>
+          <p class="fila"><span>Destinatario</span><span id="c-dest"></span></p>
+          <p class="fila"><span>Monto</span><span id="c-monto"></span></p>
+          <p class="fila"><span>Desde</span><span><span aria-hidden="true">Cuenta corriente ••4821</span><span class="sr-only">Cuenta corriente terminada en 4 8 2 1</span></span></p>
+          <p class="fila"><span>Mensaje</span><span id="c-msg"></span></p>
         </div>
 
         <div style="margin-top:20px">
@@ -171,7 +175,7 @@
 
 
     <!-- ============ PANTALLA 3: LISTO ============ -->
-    <section class="vista" id="v3" aria-labelledby="t3" hidden>
+    <section class="vista" id="v3" hidden>
       <div class="hero exito">
         <svg class="check" viewBox="0 0 88 88" aria-hidden="true" focusable="false"><circle cx="44" cy="44" r="42" fill="#ffffff"/><path d="M26 45l12 12 24-26" stroke="#2c3396" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <h1 class="titulo" id="t3" tabindex="-1">Transferencia realizada con éxito</h1>
@@ -188,10 +192,10 @@
         <h2 class="h2">Comprobante</h2>
         <div class="comprobante">
           <div class="lista-filas">
-            <p class="fila"><span>Monto<span class="sr-only">:</span></span><span id="r-monto"></span></p>
-            <p class="fila"><span>Destinatario<span class="sr-only">:</span></span><span id="r-dest"></span></p>
-            <p class="fila"><span>Fecha<span class="sr-only">:</span></span><span id="r-fecha"></span></p>
-            <p class="fila"><span>Número de comprobante<span class="sr-only">:</span></span><span id="comprobante"></span></p>
+            <p class="fila"><span>Monto</span><span id="r-monto"></span></p>
+            <p class="fila"><span>Destinatario</span><span id="r-dest"></span></p>
+            <p class="fila"><span>Fecha</span><span id="r-fecha"></span></p>
+            <p class="fila"><span>Número de comprobante</span><span id="comprobante"></span></p>
           </div>
         </div>
         <button type="button" class="btn btn-primario" id="btn-inicio">Volver al inicio</button>
