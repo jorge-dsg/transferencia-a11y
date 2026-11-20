@@ -1,0 +1,230 @@
+/* ==========================================================================
+   base.css — estilos COMPARTIDOS por las dos versiones.
+   Aquí vive todo lo visual: colores, marco de teléfono, tarjetas, botones…
+   Por eso /accesible/ y /no-accesible/ se ven casi idénticas.
+   Lo que cambia entre versiones está en accesible.css y no-accesible.css.
+   Índice:
+     1. Variables (paleta)
+     2. Base y marco de teléfono
+     3. Cabecera y héroe azul
+     4. Indicador de pasos
+     5. Hoja blanca (contenido)
+     6. Pantalla de inicio (saldo y movimientos)
+     7. Botones
+     8. Formulario (contactos, monto, campos)
+     9. Confirmar y comprobante
+   ========================================================================== */
+
+
+/* 1. VARIABLES ------------------------------------------------------------ */
+:root {
+  /* Azul de marca */
+  --brand: #2c3396;
+  --brand-d: #1e2370;          /* azul oscuro: textos y botones sobre fondo claro */
+  --brand-tint: #eef0fa;       /* azul muy claro: tarjetas */
+  --on-brand-soft: #d6d9f5;    /* texto secundario sobre el azul */
+
+  /* Neutros */
+  --ink: #14142b;              /* texto principal */
+  --muted: #55577a;            /* texto secundario */
+  --line: #dcdef2;             /* separadores */
+  --field: #767897;            /* borde de campos */
+
+  /* Estados */
+  --error: #b3261e;
+  --error-bg: #fff1f0;
+  --ok: #0a6b3a;
+
+  /* Botones (la versión no accesible los aclara a propósito) */
+  --btn-bg: var(--brand);
+  --btn-borde: var(--brand);
+  --btn-link: var(--brand-d);
+
+  /* Foco (solo se usa en la versión accesible) */
+  --focus: #ffc83d;
+}
+
+
+/* 2. BASE Y MARCO DE TELÉFONO ----------------------------------------------
+   En móvil la app ocupa toda la pantalla.
+   Desde 600 px se dibuja dentro de un teléfono centrado.               */
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--ink);
+  background: #fff;
+}
+
+.stage  { min-height: 100vh; min-height: 100dvh; }
+.phone  { position: relative; min-height: 100vh; min-height: 100dvh; background: #fff; }
+.screen { display: flex; flex-direction: column; min-height: inherit; }
+
+@media (min-width: 600px) {
+  body  { background: radial-gradient(circle at 20% 10%, #dde0f5, #f1f2fa 60%); }
+  .stage { display: grid; place-items: center; padding: 24px; }
+
+  .phone {
+    width: 390px;
+    height: min(844px, calc(100vh - 48px));
+    min-height: 0;
+    border: 10px solid var(--ink);
+    border-radius: 48px;
+    overflow: hidden;
+    box-shadow: 0 30px 80px rgba(20, 20, 43, .35);
+  }
+  /* Muesca del teléfono (decorativa) */
+  .phone::before {
+    content: "";
+    position: absolute; z-index: 20; top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 112px; height: 26px;
+    background: var(--ink);
+    border-radius: 0 0 18px 18px;
+  }
+  .screen { height: 100%; min-height: 0; overflow-y: auto; }
+  .phone .top { padding-top: 38px; }   /* deja espacio a la muesca */
+}
+
+
+/* 3. CABECERA Y HÉROE AZUL ------------------------------------------------ */
+.top {
+  background: var(--brand);
+  color: #fff;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 20px 4px;
+}
+.marca { display: flex; align-items: center; gap: 10px; margin: 0; font-weight: 700; font-size: 1.0625rem; }
+.yo    { width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,.18); display: grid; place-items: center; font-weight: 700; font-size: .875rem; }
+
+.main  { flex: 1; display: flex; flex-direction: column; }
+.vista { flex: 1; display: flex; flex-direction: column; }   /* una "pantalla" de la app */
+
+.hero      { background: var(--brand); color: #fff; padding: 12px 20px 48px; }
+.hero-fila { display: flex; align-items: center; gap: 12px; }
+.titulo    { margin: 0; font-size: 1.625rem; line-height: 1.2; font-weight: 700; letter-spacing: -.01em; }
+.sub-hero  { margin: 4px 0 0; color: var(--on-brand-soft); font-size: .9375rem; }
+
+/* Botón circular "volver" */
+.atras {
+  flex: none; width: 48px; height: 48px; padding: 0;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,.6);
+  background: rgba(255,255,255,.14);
+  color: #fff;
+  cursor: pointer;
+}
+
+
+/* 4. INDICADOR DE PASOS --------------------------------------------------- */
+.pasos { display: flex; gap: 8px; margin: 18px 0 0; padding: 0; list-style: none; }
+.paso  { flex: 1; padding-top: 8px; font-size: .875rem; color: var(--on-brand-soft); border-top: 4px solid rgba(255,255,255,.4); }
+.paso.on    { color: #fff; font-weight: 700; border-top-color: #fff; }       /* paso actual */
+.paso.hecho { color: #fff; border-top-color: rgba(255,255,255,.85); }        /* paso completado */
+
+
+/* 5. HOJA BLANCA (CONTENIDO) ---------------------------------------------- */
+.sheet {
+  flex: 1;
+  position: relative;
+  margin-top: -28px;               /* sube sobre el héroe azul */
+  padding: 24px 20px 28px;
+  background: #fff;
+  border-radius: 28px 28px 0 0;
+}
+.lista { margin: 0; padding: 0; list-style: none; }
+.h2   { margin: 0 0 8px; font-size: 1.125rem; font-weight: 700; }
+.pie  { text-align: center; font-size: .875rem; }
+
+
+/* 6. PANTALLA DE INICIO --------------------------------------------------- */
+.saldo-card { margin-top: 18px; padding: 20px; border-radius: 24px; background: rgba(255,255,255,.14); }
+.lbl        { margin: 0; font-size: .875rem; color: #fff; }
+.saldo-val  { margin: 2px 0 0; font-size: 2.5rem; line-height: 1.1; font-weight: 800; letter-spacing: -.02em; }
+.cuenta-sub { margin: 6px 0 16px; font-size: .875rem; color: #fff; }
+
+/* Lista de movimientos */
+.mov     { padding: 12px 0; border-bottom: 1px solid var(--line); }
+.mov:last-child { border-bottom: 0; }
+.mov-vis { display: flex; align-items: center; gap: 12px; }
+.mov-dat { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.mov-n   { font-weight: 600; }
+.mov-f   { font-size: .875rem; color: var(--muted); }
+.monto-mov { font-weight: 700; white-space: nowrap; text-align: right; }
+.mov-tipo  { display: block; font-size: .875rem; font-weight: 500; color: var(--muted); }   /* "Abono" / "Cargo" */
+.pos { color: var(--ok); }
+.neg { color: var(--error); }
+
+/* Avatar con iniciales (los colores llegan por --bg y --fg) */
+.av {
+  flex: none; width: 44px; height: 44px; border-radius: 50%;
+  display: grid; place-items: center;
+  font-weight: 700; font-size: .875rem;
+  background: var(--bg, var(--brand-tint));
+  color: var(--fg, var(--brand-d));
+}
+.av.grande { width: 56px; height: 56px; font-size: 1.0625rem; }
+
+
+/* 7. BOTONES -------------------------------------------------------------- */
+.btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; min-height: 56px; padding: .75rem 1.25rem;
+  font: inherit; font-weight: 700; font-size: 1rem;
+  border: 2px solid transparent; border-radius: 18px;
+  cursor: pointer;
+}
+.btn-primario { background: var(--btn-bg); border-color: var(--btn-borde); color: #fff; }
+.btn-sec      { margin-top: 12px; background: #fff; border-color: var(--btn-borde); color: var(--btn-link); }
+.btn-claro    { background: #fff; color: var(--btn-link); }
+
+
+/* 8. FORMULARIO ----------------------------------------------------------- */
+.campo { margin-bottom: 20px; }
+
+.input {
+  width: 100%; min-height: 56px; padding: .75rem 1rem;
+  font: inherit; color: var(--ink);
+  background: #fff;
+  border: 2px solid var(--field); border-radius: 14px;
+}
+
+/* Tarjeta de contacto (avatar + nombre + cuenta + marca de selección) */
+.contacto {
+  display: flex; align-items: center; gap: 12px;
+  min-height: 68px; margin-bottom: 10px; padding: 10px 14px;
+  background: #fff;
+  border: 2px solid var(--line); border-radius: 18px;
+  cursor: pointer;
+}
+.c-dat { flex: 1; display: flex; flex-direction: column; }
+.c-n   { font-weight: 600; }
+.c-c   { font-size: .875rem; color: var(--muted); }
+
+/* Caja del monto: número grande y centrado */
+.monto-caja { padding: 18px 16px 16px; text-align: center; background: var(--brand-tint); border-radius: 24px; }
+.monto-fila { display: flex; align-items: center; justify-content: center; gap: 6px; }
+.monto-fila .peso  { font-size: 2.5rem; font-weight: 800; color: var(--brand-d); }
+.monto-fila .input { width: 10ch; max-width: 100%; min-height: 64px; text-align: center; font-size: 2.25rem; font-weight: 800; color: var(--brand-d); }
+
+
+/* 9. CONFIRMAR Y COMPROBANTE ---------------------------------------------- */
+.ficha      { margin-bottom: 20px; padding: 20px; background: var(--brand-tint); border-radius: 24px; }
+.ficha-dest { display: flex; align-items: center; gap: 14px; }
+.monto-grande { margin: 16px 0 4px; text-align: center; font-size: 2.5rem; font-weight: 800; letter-spacing: -.02em; color: var(--brand-d); }
+
+/* Fila "etiqueta ... valor" (sirve para <div>, <dt>/<dd>, etc.) */
+.fila { display: flex; justify-content: space-between; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.fila:last-child { border-bottom: 0; }
+.fila > :first-child { color: var(--muted); }
+.fila > :last-child  { font-weight: 600; text-align: right; }
+
+.exito  { text-align: center; }
+.check  { display: block; width: 88px; height: 88px; margin: 0 auto 16px; }
+.comprobante { margin-bottom: 20px; padding: 4px 18px; border: 2px dashed var(--field); border-radius: 20px; }
+.comprobante .fila { padding: 10px 0; }

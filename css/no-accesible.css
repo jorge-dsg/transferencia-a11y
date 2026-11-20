@@ -1,0 +1,58 @@
+/* ==========================================================================
+   no-accesible.css — BARRERAS INTENCIONALES de la versión no accesible.
+   Visualmente casi igual a la accesible (comparten base.css), pero con:
+     1. Foco eliminado
+     2. Contraste bajo (se sobrescriben las variables de color)
+     3. Errores solo por color
+     4. Selección de contacto "falsa" (div en vez de radio)
+     5. Toast que desaparece rápido
+   ========================================================================== */
+
+
+/* 1. BARRERA: sin indicador de foco (viola WCAG 2.4.7) --------------------- */
+* { outline: none !important; }
+
+
+/* 2. BARRERA: contraste bajo (viola WCAG 1.4.3 y 1.4.11) --------------------
+   Basta con aclarar las variables: base.css hace el resto.                  */
+:root {
+  --ink: #2b2b45;
+  --muted: #9496b4;
+  --line: #e4e5f4;
+  --field: #dcdcea;            /* borde de campos casi invisible */
+  --error: #f08a84;
+  --error-bg: #fff6f5;
+  --ok: #5fa883;
+  --on-brand-soft: #a5aada;
+  --btn-bg: #6a74cf;           /* botones con texto blanco de bajo contraste */
+  --btn-borde: #6a74cf;
+  --btn-link: #6a74cf;
+}
+.input::placeholder { color: #c4c5d8; }                 /* el placeholder hace de "etiqueta" */
+.monto-fila .input::placeholder { font-size: 1rem; font-weight: 500; }
+
+
+/* 3. BARRERA: el error se marca solo con color (viola WCAG 1.4.1 y 3.3.1) -- */
+.rojo { border-color: var(--error) !important; background: var(--error-bg) !important; }
+
+
+/* 4. BARRERA: "radio" falso hecho con <div> (viola WCAG 4.1.2) ------------- */
+.contacto .radio { order: 3; flex: none; width: 24px; height: 24px; border: 2px solid #b9bad0; border-radius: 50%; background: #fff; }
+.contacto.sel { border-color: var(--brand); background: var(--brand-tint); }
+.contacto.sel .radio { border: 7px solid var(--brand); }
+
+
+/* 5. BARRERA: aviso que desaparece en 1,5 s (viola WCAG 2.2.1) ------------- */
+.toast {
+  display: none;
+  position: absolute; z-index: 40; bottom: 24px; left: 50%; transform: translateX(-50%);
+  padding: .5rem 1.25rem;
+  background: #f26b63; color: #ffe9e7;
+  border-radius: 20px; font-size: .8125rem;
+}
+
+
+/* Ajustes menores para que se vea igual que la versión accesible */
+img.av { display: block; }
+.btn   { user-select: none; }
+.pie   { padding: 12px 20px 24px; color: var(--muted); cursor: pointer; }
