@@ -29,6 +29,8 @@
   --btn-link: #6a74cf;
 }
 .input::placeholder { color: #c4c5d8; }                 /* el placeholder hace de "etiqueta" */
+.monto-mov.pos { color: #a3d1b9; }                     /* abonos casi ilegibles (1,7:1 sobre blanco) */
+.monto-mov.neg { color: #f6b9b5; }                     /* cargos casi ilegibles (1,7:1 sobre blanco) */
 
 
 /* 3. BARRERA: el error se marca solo con color (viola WCAG 1.4.1 y 3.3.1) -- */

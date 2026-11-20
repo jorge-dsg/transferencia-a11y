@@ -58,6 +58,6 @@ Flujo: **Inicio** (saldo y últimos movimientos) → botón *Transferir* → **D
 - Errores marcados solo con un borde rojo tenue + toast "Error" que desaparece en 1,5 s
 - Imágenes (logo, avatares, check de éxito) sin `alt`
 - Iconos (volver, transferir) sin texto
-- Bajo contraste sutil en textos, botones y placeholders; foco eliminado (`outline: none`)
+- Bajo contraste sutil en textos, botones y placeholders; montos de abonos y cargos casi ilegibles (~1,7:1); foco eliminado (`outline: none`)
 - Indicador de pasos solo visual
 - Sin aviso de cambio de paso ni de "procesando"
