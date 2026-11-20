@@ -8,6 +8,7 @@
      4. Contactos con radios nativos
      5. Detalles de elementos semánticos
      6. Movimiento reducido
+     7. Tamaño mínimo de texto: 16 px
    ========================================================================== */
 
 
@@ -43,7 +44,7 @@
 /* 3. FORMULARIO ----------------------------------------------------------- */
 .etiqueta { display: block; margin-bottom: 4px; font-weight: 700; }   /* <label> visible */
 .req { font-weight: 500; color: var(--muted); }   /* "(obligatorio)" / "(opcional)": siempre visibles */
-.ayuda    { display: block; margin-bottom: 8px; font-size: .875rem; color: var(--muted); }
+.ayuda    { display: block; margin-bottom: 8px; font-size: 1rem; color: var(--muted); }
 
 fieldset { min-width: 0; margin: 0 0 20px; padding: 0; border: 0; }
 legend   { margin-bottom: 10px; padding: 0; font-weight: 700; }
@@ -55,7 +56,7 @@ legend   { margin-bottom: 10px; padding: 0; font-weight: 700; }
 
 /* Campo con error: borde rojo + fondo + mensaje con icono (nunca solo color) */
 .input[aria-invalid="true"] { border-color: var(--error); background: var(--error-bg); }
-.error-campo { margin: 8px 0 0; font-size: .9375rem; font-weight: 600; color: var(--error); }
+.error-campo { margin: 8px 0 0; font-size: 1rem; font-weight: 600; color: var(--error); }
 .error-campo:empty  { display: none; }
 .error-campo::before { content: "⚠ "; }
 
@@ -96,3 +97,8 @@ p.fila { margin: 0; }   /* filas "etiqueta … valor" como texto simple: sin "t�
     to   { opacity: 1; transform: none; }
   }
 }
+
+
+/* 7. TAMAÑO MÍNIMO DE TEXTO: 16 px ------------------------------------------
+   base.css usa 14–15 px en textos secundarios; aquí ningún texto baja de 1rem. */
+.sub-hero, .lbl, .cuenta-sub, .paso, .mov-f, .c-c, .pie, .yo, .av { font-size: 1rem; }
