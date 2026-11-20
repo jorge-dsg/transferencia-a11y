@@ -155,12 +155,12 @@
 
       <div class="sheet">
         <!-- Todo lo que se ve en pantalla es también lo que se lee, en el mismo orden -->
-        <dl>
-          <div class="fila"><dt>Destinatario</dt><dd id="c-dest"></dd></div>
-          <div class="fila"><dt>Monto</dt><dd id="c-monto"></dd></div>
-          <div class="fila"><dt>Desde</dt><dd><span aria-hidden="true">Cuenta corriente ••4821</span><span class="sr-only">Cuenta corriente terminada en 4 8 2 1</span></dd></div>
-          <div class="fila"><dt>Mensaje</dt><dd id="c-msg"></dd></div>
-        </dl>
+        <div class="lista-filas">
+          <p class="fila"><span>Destinatario<span class="sr-only">:</span></span><span id="c-dest"></span></p>
+          <p class="fila"><span>Monto<span class="sr-only">:</span></span><span id="c-monto"></span></p>
+          <p class="fila"><span>Desde<span class="sr-only">:</span></span><span><span aria-hidden="true">Cuenta corriente ••4821</span><span class="sr-only">Cuenta corriente terminada en 4 8 2 1</span></span></p>
+          <p class="fila"><span>Mensaje<span class="sr-only">:</span></span><span id="c-msg"></span></p>
+        </div>
 
         <div style="margin-top:20px">
           <button type="button" class="btn btn-primario" id="btn-confirmar">Confirmar y transferir</button>
@@ -187,12 +187,12 @@
         <p id="texto-exito" style="margin-top:0"></p>
         <h2 class="h2">Comprobante</h2>
         <div class="comprobante">
-          <dl>
-            <div class="fila"><dt>Monto</dt><dd id="r-monto"></dd></div>
-            <div class="fila"><dt>Destinatario</dt><dd id="r-dest"></dd></div>
-            <div class="fila"><dt>Fecha</dt><dd id="r-fecha"></dd></div>
-            <div class="fila"><dt>Número de comprobante</dt><dd id="comprobante"></dd></div>
-          </dl>
+          <div class="lista-filas">
+            <p class="fila"><span>Monto<span class="sr-only">:</span></span><span id="r-monto"></span></p>
+            <p class="fila"><span>Destinatario<span class="sr-only">:</span></span><span id="r-dest"></span></p>
+            <p class="fila"><span>Fecha<span class="sr-only">:</span></span><span id="r-fecha"></span></p>
+            <p class="fila"><span>Número de comprobante<span class="sr-only">:</span></span><span id="comprobante"></span></p>
+          </div>
         </div>
         <button type="button" class="btn btn-primario" id="btn-inicio">Volver al inicio</button>
         <button type="button" class="btn btn-sec" id="btn-nueva">Hacer otra transferencia</button>

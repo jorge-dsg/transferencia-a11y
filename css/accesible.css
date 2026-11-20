@@ -80,8 +80,7 @@ legend   { margin-bottom: 10px; padding: 0; font-weight: 700; }
 
 
 /* 5. DETALLES SEMÁNTICOS -------------------------------------------------- */
-dl { margin: 0; }
-dd { margin: 0; }
+p.fila { margin: 0; }   /* filas "etiqueta … valor" como texto simple: sin "término" / "descripción" */
 .btn[aria-disabled="true"] { background: var(--brand-d); border-color: var(--brand-d); cursor: progress; }   /* "Transfiriendo…" */
 .btn-primario:hover        { background: var(--brand-d); border-color: var(--brand-d); }
 .pie a { display: inline-block; padding: 12px; color: var(--brand-d); font-weight: 600; }                    /* objetivo ≥ 44 px */
