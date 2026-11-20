@@ -48,6 +48,11 @@
 fieldset { min-width: 0; margin: 0 0 20px; padding: 0; border: 0; }
 legend   { margin-bottom: 10px; padding: 0; font-weight: 700; }
 
+/* Campo de monto: el "$" es decorativo (aria-hidden) y va dentro del recuadro, a la izquierda */
+.input-peso { position: relative; }
+.input-peso .signo-peso { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
+.input-peso .input { padding-left: 2rem; }
+
 /* Campo con error: borde rojo + fondo + mensaje con icono (nunca solo color) */
 .input[aria-invalid="true"] { border-color: var(--error); background: var(--error-bg); }
 .error-campo { margin: 8px 0 0; font-size: .9375rem; font-weight: 600; color: var(--error); }
@@ -77,7 +82,7 @@ legend   { margin-bottom: 10px; padding: 0; font-weight: 700; }
 /* 5. DETALLES SEMÁNTICOS -------------------------------------------------- */
 dl { margin: 0; }
 dd { margin: 0; }
-.btn[aria-disabled="true"] { background: var(--brand-d); border-color: var(--brand-d); cursor: progress; }   /* "Procesando…" */
+.btn[aria-disabled="true"] { background: var(--brand-d); border-color: var(--brand-d); cursor: progress; }   /* "Transfiriendo…" */
 .btn-primario:hover        { background: var(--brand-d); border-color: var(--brand-d); }
 .pie a { display: inline-block; padding: 12px; color: var(--brand-d); font-weight: 600; }                    /* objetivo ≥ 44 px */
 .pie   { padding: 0 20px 20px; }

@@ -101,7 +101,7 @@ function htmlMovimiento(m) {
 
 function pintarInicio() {
   $("saldo-vis").textContent = formatearMonto(saldo);
-  $("saldo-voz").textContent = montoHablado(saldo);
+  $("saldo-voz").textContent = "Saldo total: " + montoHablado(saldo) + ". Cuenta corriente terminada en 4 8 2 1.";
   $("ayuda-monto").innerHTML = "Escribe solo números. Máximo " + montoHTML(saldo) + ".";
   $("movs").innerHTML = movimientos.map(htmlMovimiento).join("");
 }
@@ -132,22 +132,24 @@ function irA(pantalla, moverFoco = true) {
 
 
 /* FORMATO DEL CAMPO MONTO ------------------------------------------------- *
- * Mientras se escribe, el campo muestra pesos: 1800 -> "$1.800".
- * Debajo se muestra el monto en palabras (también lo lee el lector).        */
+ * Mientras se escribe, el campo muestra el número con puntos: 1800 -> "1.800".
+ * El "$" es un adorno visual fuera del valor (si estuviera en el valor, el
+ * lector diría "símbolo de dólar"). Debajo se muestra el monto en palabras,
+ * que también lee el lector: "Mil ochocientos pesos".                       */
 const soloDigitos = (texto) => texto.replace(/\D/g, "").replace(/^0+(?=\d)/, "");
 
 function actualizarMonto() {
   const campo = $("monto");
   const digitosAntesDelCursor = soloDigitos(campo.value.slice(0, campo.selectionStart)).length;
   const digitos = soloDigitos(campo.value);
-  campo.value = digitos ? formatearMonto(Number(digitos)) : "";
+  campo.value = digitos ? formatearNumero(Number(digitos)) : "";
   $("monto-letras").textContent = digitos && Number(digitos) > 0
     ? montoHablado(Number(digitos)).replace(/^./, (c) => c.toUpperCase())
     : "";
 
   // Deja el cursor después del mismo dígito en que estaba
   let cuenta = 0, posicion = campo.value.length;
-  if (digitosAntesDelCursor === 0) posicion = campo.value ? 1 : 0;   // después del "$"
+  if (digitosAntesDelCursor === 0) posicion = 0;
   else for (let i = 0; i < campo.value.length; i++) {
     if (/\d/.test(campo.value[i]) && ++cuenta === digitosAntesDelCursor) { posicion = i + 1; break; }
   }
@@ -225,11 +227,15 @@ function pintarConfirmacion() {
 
 function pintarComprobante() {
   const { contacto, monto } = transferencia;
-  $("texto-exito").innerHTML = `Transferiste ${montoHTML(monto)} a ${contacto.nombre}.`;
+  // Una sola frase para el lector (si se mezclan trozos, lo lee por partes): "Transferiste nueve mil pesos a Ana Rojas."
+  $("texto-exito").innerHTML = `<span aria-hidden="true">Transferiste ${formatearMonto(monto)} a ${contacto.nombre}.</span>` +
+    `<span class="sr-only">Transferiste ${montoHablado(monto)} a ${contacto.nombre}.</span>`;
   $("r-monto").innerHTML = montoHTML(monto);
   $("r-dest").textContent = contacto.nombre;
   $("r-fecha").textContent = fechaHoy();
-  $("comprobante").textContent = numeroComprobante();
+  // El número se lee dígito a dígito ("3 8 6 8…"), no como una cifra enorme
+  const numero = numeroComprobante();
+  $("comprobante").innerHTML = `<span aria-hidden="true">${numero}</span><span class="sr-only">${numero.split("").join(" ")}</span>`;
 }
 
 function alConfirmar() {
@@ -237,8 +243,8 @@ function alConfirmar() {
   if (boton.getAttribute("aria-disabled") === "true") return;   // evita doble envío sin perder el foco
 
   boton.setAttribute("aria-disabled", "true");
-  boton.textContent = "Procesando…";
-  $("anuncio").textContent = "Procesando la transferencia, espera un momento.";   // región aria-live
+  boton.textContent = "Transfiriendo…";
+  $("anuncio").textContent = "Transfiriendo tu dinero, espera un momento.";   // región aria-live
 
   setTimeout(() => {
     const { contacto, monto } = transferencia;
