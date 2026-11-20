@@ -81,7 +81,8 @@ function estiloAvatar(color) {
   return `--bg:${COLORES_AVATAR[color][0]};--fg:${COLORES_AVATAR[color][1]}`;
 }
 
-/* Cada movimiento se lee como UNA frase y la parte visual se oculta al lector:
+/* Visualmente el signo (+ / −) indica abono o cargo; el lector lo dice con palabras.
+   Cada movimiento se lee como UNA frase y la parte visual se oculta al lector:
    "Sueldo Empresa Andes, hoy a las 09:12. Abono de ochocientos cincuenta mil pesos." */
 function htmlMovimiento(m) {
   const esAbono = m.monto > 0;
@@ -93,7 +94,7 @@ function htmlMovimiento(m) {
       <span class="mov-vis" aria-hidden="true">
         <span class="av" style="${estiloAvatar(m.color)}">${m.iniciales}</span>
         <span class="mov-dat"><span class="mov-n">${m.nombre}</span><span class="mov-f">${m.fecha}</span></span>
-        <span class="monto-mov ${esAbono ? "pos" : "neg"}">${esAbono ? "+" : "−"}${formatearMonto(valor)}<span class="mov-tipo">${tipo}</span></span>
+        <span class="monto-mov ${esAbono ? "pos" : "neg"}">${esAbono ? "+" : "−"}${formatearMonto(valor)}</span>
       </span>
     </li>`;
 }

@@ -42,10 +42,8 @@
 
 /* 3. FORMULARIO ----------------------------------------------------------- */
 .etiqueta { display: block; margin-bottom: 4px; font-weight: 700; }   /* <label> visible */
-.monto-caja .etiqueta { color: var(--ink); }
 .req { font-weight: 500; color: var(--muted); }   /* "(obligatorio)" / "(opcional)": siempre visibles */
 .ayuda    { display: block; margin-bottom: 8px; font-size: .875rem; color: var(--muted); }
-.monto-caja .ayuda { margin: 8px 0 0; }
 
 fieldset { min-width: 0; margin: 0 0 20px; padding: 0; border: 0; }
 legend   { margin-bottom: 10px; padding: 0; font-weight: 700; }
