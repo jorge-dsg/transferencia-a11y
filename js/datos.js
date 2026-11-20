@@ -14,11 +14,12 @@ const COLORES_AVATAR = [
   ["#e8e9f5", "#3a3c5e"]
 ];
 
+/* cuentaHablada separa los dígitos ("4 8 2 1") para que el lector no diga "cuatro mil ochocientos veintiuno" */
 /* Contactos a los que se puede transferir (clave = valor del radio / data) */
 const CONTACTOS = {
-  mg: { nombre: "María González", cuenta: "Cuenta corriente ••4821", cuentaHablada: "Cuenta corriente terminada en 4821", iniciales: "MG", color: 0 },
-  jp: { nombre: "Juan Pérez",     cuenta: "Cuenta vista ••1934",     cuentaHablada: "Cuenta vista terminada en 1934", iniciales: "JP", color: 1 },
-  ar: { nombre: "Ana Rojas",      cuenta: "Cuenta RUT ••7710",       cuentaHablada: "Cuenta RUT terminada en 7710", iniciales: "AR", color: 2 }
+  mg: { nombre: "María González", cuenta: "Cuenta corriente ••4821", cuentaHablada: "Cuenta corriente terminada en 4 8 2 1", iniciales: "MG", color: 0 },
+  jp: { nombre: "Juan Pérez",     cuenta: "Cuenta vista ••1934",     cuentaHablada: "Cuenta vista terminada en 1 9 3 4", iniciales: "JP", color: 1 },
+  ar: { nombre: "Ana Rojas",      cuenta: "Cuenta RUT ••7710",       cuentaHablada: "Cuenta RUT terminada en 7 7 1 0", iniciales: "AR", color: 2 }
 };
 
 /* Últimos movimientos. monto > 0 = abono (entra), monto < 0 = cargo (sale) */

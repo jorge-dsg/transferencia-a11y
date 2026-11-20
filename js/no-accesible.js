@@ -95,10 +95,6 @@ function seguir() {
 
   var c = CONTACTOS[contactoElegido];
   var valor = Number(monto);
-  $("c-av").src = srcAvatar(c.iniciales, c.color);
-  $("c-nombre").textContent = c.nombre;
-  $("c-cuenta").textContent = c.cuenta;
-  $("c-monto-grande").textContent = formatearMonto(valor);
   $("cd").textContent = c.nombre;
   $("cm").textContent = formatearMonto(valor);
   $("cs").textContent = $("msg").value || "-";

@@ -167,7 +167,6 @@ body {
   background: var(--bg, var(--brand-tint));
   color: var(--fg, var(--brand-d));
 }
-.av.grande { width: 56px; height: 56px; font-size: 1.0625rem; }
 
 
 /* 7. BOTONES -------------------------------------------------------------- */
@@ -208,9 +207,6 @@ body {
 
 
 /* 9. CONFIRMAR Y COMPROBANTE ---------------------------------------------- */
-.ficha      { margin-bottom: 20px; padding: 20px; background: var(--brand-tint); border-radius: 24px; }
-.ficha-dest { display: flex; align-items: center; gap: 14px; }
-.monto-grande { margin: 16px 0 4px; text-align: center; font-size: 2.5rem; font-weight: 800; letter-spacing: -.02em; color: var(--brand-d); }
 
 /* Fila "etiqueta ... valor" (sirve para <div>, <dt>/<dd>, etc.) */
 .fila { display: flex; justify-content: space-between; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--line); }
