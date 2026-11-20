@@ -102,7 +102,8 @@ function htmlMovimiento(m) {
 function pintarInicio() {
   $("saldo-vis").textContent = formatearMonto(saldo);
   $("saldo-voz").textContent = "Saldo total: " + montoHablado(saldo) + ". Cuenta corriente terminada en 4 8 2 1.";
-  $("ayuda-monto").innerHTML = "Escribe solo números. Máximo " + montoHTML(saldo) + ".";
+  $("ayuda-monto").textContent = "Escribe solo números. Máximo " + formatearMonto(saldo) + ".";
+  $("ayuda-monto-voz").textContent = "Escribe solo números. Máximo " + montoHablado(saldo) + ".";
   $("movs").innerHTML = movimientos.map(htmlMovimiento).join("");
 }
 
