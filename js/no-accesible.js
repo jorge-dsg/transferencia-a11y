@@ -43,7 +43,7 @@ function pintarInicio() {
       "<img class='av' src='" + srcAvatar(m.iniciales, m.color) + "'>" +
       "<div class='mov-dat'><div class='mov-n'>" + m.nombre + "</div><div class='mov-f'>" + m.fecha + "</div></div>" +
       "<div class='monto-mov " + (esAbono ? "pos" : "neg") + "'>" + (esAbono ? "+" : "−") + formatearMonto(Math.abs(m.monto)) +
-      "<div class='mov-tipo'>" + (esAbono ? "Abono" : "Cargo") + "</div></div></div></div>";
+      "</div></div></div>";
   });
   $("movs").innerHTML = html;
 }

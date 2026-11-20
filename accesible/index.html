@@ -108,14 +108,11 @@
             <p class="error-campo" id="err-destinatario"></p>
           </fieldset>
 
-          <!-- Monto -->
-          <div class="campo monto-caja">
+          <!-- Monto: mismo formato que todos los campos (etiqueta, ayuda, input, error) -->
+          <div class="campo">
             <label class="etiqueta" for="monto">Monto a transferir, en pesos <span class="req">(obligatorio)</span></label>
-            <div class="monto-fila">
-              <span class="peso" aria-hidden="true">$</span>
-              <input class="input" id="monto" type="text" inputmode="numeric" autocomplete="off" required aria-describedby="ayuda-monto err-monto">
-            </div>
             <span class="ayuda" id="ayuda-monto"></span>
+            <input class="input" id="monto" type="text" inputmode="numeric" autocomplete="off" required aria-describedby="ayuda-monto err-monto">
             <p class="error-campo" id="err-monto"></p>
           </div>
 
