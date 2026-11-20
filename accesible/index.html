@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Transferir dinero – Paso 1 de 3 – Banco Demo (versión accesible)</title>
+  <style>
+    :root {
+      --azul: #0b4fa8; --azul-osc: #083b7d; --texto: #1a1a1a; --texto-2: #4a4a4a;
+      --fondo: #f4f6fa; --borde: #6b7280; --error: #b00020; --ok: #0f6b2f;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; font-size: 1rem; line-height: 1.5; color: var(--texto); background: var(--fondo); }
+    .skip { position: absolute; left: -9999px; top: 0; background: #fff; color: var(--azul); padding: .75rem 1rem; z-index: 10; font-weight: 600; }
+    .skip:focus { left: 1rem; top: 1rem; }
+    header { background: var(--azul); color: #fff; padding: 1rem; }
+    header .marca { font-weight: 700; font-size: 1.125rem; margin: 0; }
+    main { max-width: 32rem; margin: 0 auto; padding: 1.25rem 1rem 3rem; }
+    h1 { font-size: 1.5rem; margin: .5rem 0 1rem; }
+    h1:focus { outline: none; }
+    .pasos { list-style: none; display: flex; gap: .5rem; padding: 0; margin: 0 0 1.5rem; }
+    .pasos li { flex: 1; text-align: center; font-size: .875rem; padding: .5rem .25rem; border-bottom: 4px solid #c3c8d1; color: var(--texto-2); }
+    .pasos li[aria-current="step"] { border-color: var(--azul); color: var(--azul-osc); font-weight: 700; }
+    .pasos li.hecho { border-color: var(--ok); color: var(--ok); }
+    .tarjeta { background: #fff; border-radius: 12px; padding: 1.25rem; box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+    .saldo { margin: 0 0 1.25rem; padding: .75rem 1rem; background: #e8f0fc; border-radius: 8px; }
+    .saldo strong { font-size: 1.25rem; display: block; }
+    .campo { margin-bottom: 1.25rem; }
+    label, legend { display: block; font-weight: 600; margin-bottom: .375rem; }
+    .ayuda { display: block; font-size: .875rem; color: var(--texto-2); margin-bottom: .375rem; }
+    input, select, textarea { width: 100%; font: inherit; padding: .75rem; min-height: 48px; border: 2px solid var(--borde); border-radius: 8px; background: #fff; color: var(--texto); }
+    input[aria-invalid="true"], select[aria-invalid="true"] { border-color: var(--error); }
+    .error-campo { color: var(--error); font-size: .9375rem; font-weight: 600; margin-top: .375rem; }
+    .error-campo:empty { display: none; }
+    .error-campo::before { content: "⚠ "; }
+    :focus-visible { outline: 3px solid #ffbf47; outline-offset: 2px; box-shadow: 0 0 0 5px var(--texto); }
+    button { font: inherit; font-weight: 700; min-height: 48px; padding: .75rem 1.25rem; border-radius: 8px; cursor: pointer; width: 100%; }
+    .primario { background: var(--azul); color: #fff; border: 2px solid var(--azul); }
+    .primario:hover { background: var(--azul-osc); }
+    .secundario { background: #fff; color: var(--azul); border: 2px solid var(--azul); margin-top: .75rem; }
+    .resumen-errores { border: 3px solid var(--error); border-radius: 8px; padding: 1rem; margin-bottom: 1.25rem; background: #fff5f6; }
+    .resumen-errores h2 { font-size: 1.125rem; margin: 0 0 .5rem; color: var(--error); }
+    .resumen-errores ul { margin: 0; padding-left: 1.25rem; }
+    .resumen-errores a { color: var(--error); font-weight: 600; }
+    dl { margin: 0 0 1.25rem; }
+    dl div { display: flex; justify-content: space-between; gap: 1rem; padding: .75rem 0; border-bottom: 1px solid #d7dbe2; }
+    dt { color: var(--texto-2); } dd { margin: 0; font-weight: 700; text-align: right; }
+    .exito { text-align: center; }
+    .exito .icono { width: 64px; height: 64px; margin: 0 auto .5rem; }
+    [hidden] { display: none !important; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+    footer { text-align: center; font-size: .875rem; color: var(--texto-2); padding: 1rem; }
+    footer a { color: var(--azul); }
+    @media (prefers-reduced-motion: no-preference) { button { transition: background .15s; } }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#contenido">Saltar al contenido principal</a>
+
+  <header>
+    <p class="marca">Banco Demo</p>
+  </header>
+
+  <main id="contenido">
+    <nav aria-label="Progreso de la transferencia">
+      <ol class="pasos">
+        <li id="p1" aria-current="step">1. Datos <span class="sr-only" id="p1-estado">(paso actual)</span></li>
+        <li id="p2">2. Confirmar <span class="sr-only" id="p2-estado"></span></li>
+        <li id="p3">3. Listo <span class="sr-only" id="p3-estado"></span></li>
+      </ol>
+    </nav>
+
+    <!-- PASO 1 -->
+    <section id="paso1" aria-labelledby="t1">
+      <h1 id="t1" tabindex="-1">Transferir dinero</h1>
+      <div class="tarjeta">
+        <p class="saldo">Saldo disponible <strong>$1.250.000</strong></p>
+
+        <div id="resumen" class="resumen-errores" role="alert" tabindex="-1" hidden>
+          <h2>Revisa los siguientes errores:</h2>
+          <ul id="lista-errores"></ul>
+        </div>
+
+        <form id="form" novalidate>
+          <div class="campo">
+            <label for="destinatario">Destinatario <span aria-hidden="true">*</span><span class="sr-only">(obligatorio)</span></label>
+            <select id="destinatario" required aria-describedby="err-destinatario">
+              <option value="">Selecciona un contacto</option>
+              <option value="María González – Cuenta Corriente terminada en 4821">María González – Cta. Cte. ••4821</option>
+              <option value="Juan Pérez – Cuenta Vista terminada en 1934">Juan Pérez – Cta. Vista ••1934</option>
+              <option value="Ana Rojas – Cuenta RUT terminada en 7710">Ana Rojas – Cuenta RUT ••7710</option>
+            </select>
+            <p class="error-campo" id="err-destinatario"></p>
+          </div>
+
+          <div class="campo">
+            <label for="monto">Monto a transferir, en pesos <span aria-hidden="true">*</span><span class="sr-only">(obligatorio)</span></label>
+            <span class="ayuda" id="ayuda-monto">Solo números, sin puntos. Máximo $1.250.000.</span>
+            <input id="monto" type="text" inputmode="numeric" autocomplete="off" required aria-describedby="ayuda-monto err-monto">
+            <p class="error-campo" id="err-monto"></p>
+          </div>
+
+          <div class="campo">
+            <label for="mensaje">Mensaje para el destinatario (opcional)</label>
+            <span class="ayuda" id="ayuda-msg">Máximo 40 caracteres.</span>
+            <input id="mensaje" type="text" maxlength="40" aria-describedby="ayuda-msg">
+          </div>
+
+          <button type="submit" class="primario">Continuar</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- PASO 2 -->
+    <section id="paso2" aria-labelledby="t2" hidden>
+      <h1 id="t2" tabindex="-1">Confirma tu transferencia</h1>
+      <div class="tarjeta">
+        <dl>
+          <div><dt>Destinatario</dt><dd id="c-dest"></dd></div>
+          <div><dt>Monto</dt><dd id="c-monto"></dd></div>
+          <div><dt>Mensaje</dt><dd id="c-msg"></dd></div>
+        </dl>
+        <button type="button" class="primario" id="btn-confirmar">Confirmar y transferir</button>
+        <button type="button" class="secundario" id="btn-volver">Volver y editar datos</button>
+      </div>
+    </section>
+
+    <!-- PASO 3 -->
+    <section id="paso3" aria-labelledby="t3" hidden>
+      <div class="tarjeta exito">
+        <svg class="icono" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><circle cx="32" cy="32" r="30" fill="#0f6b2f"/><path d="M19 33l9 9 18-19" stroke="#fff" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <h1 id="t3" tabindex="-1">Transferencia realizada con éxito</h1>
+        <p id="texto-exito"></p>
+        <p>Número de comprobante: <strong id="comprobante"></strong></p>
+        <button type="button" class="primario" id="btn-nueva">Hacer otra transferencia</button>
+      </div>
+    </section>
+
+    <!-- Región para anuncios de cambios de estado -->
+    <div class="sr-only" role="status" aria-live="polite" id="anuncio"></div>
+  </main>
+
+  <footer><a href="/">Volver al inicio de la prueba</a></footer>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const SALDO = 1250000;
+    const clp = (n) => "$" + n.toLocaleString("es-CL");
+    const clpVoz = (n) => n.toLocaleString("es-CL") + " pesos";
+    const titulos = ["Transferir dinero – Paso 1 de 3", "Confirmar transferencia – Paso 2 de 3", "Transferencia realizada – Paso 3 de 3"];
+
+    function irAPaso(n) {
+      [1, 2, 3].forEach((i) => {
+        $("paso" + i).hidden = i !== n;
+        const li = $("p" + i);
+        li.classList.toggle("hecho", i < n);
+        if (i === n) li.setAttribute("aria-current", "step"); else li.removeAttribute("aria-current");
+        $("p" + i + "-estado").textContent = i === n ? "(paso actual)" : i < n ? "(completado)" : "";
+      });
+      document.title = titulos[n - 1] + " – Banco Demo (versión accesible)";
+      $("t" + n).focus();
+      window.scrollTo(0, 0);
+    }
+
+    function setError(campo, msg) {
+      const el = $(campo);
+      $("err-" + campo).textContent = msg;
+      if (msg) el.setAttribute("aria-invalid", "true"); else el.removeAttribute("aria-invalid");
+    }
+
+    $("form").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const errores = [];
+      const dest = $("destinatario").value;
+      const montoTxt = $("monto").value.trim();
+      const monto = Number(montoTxt);
+
+      if (!dest) { setError("destinatario", "Selecciona a quién quieres transferir."); errores.push(["destinatario", "Selecciona a quién quieres transferir."]); }
+      else setError("destinatario", "");
+
+      let msgMonto = "";
+      if (!montoTxt) msgMonto = "Ingresa el monto a transferir.";
+      else if (!/^\d+$/.test(montoTxt)) msgMonto = "El monto solo puede tener números, sin puntos ni símbolos.";
+      else if (monto <= 0) msgMonto = "El monto debe ser mayor a cero.";
+      else if (monto > SALDO) msgMonto = "El monto supera tu saldo disponible de $1.250.000.";
+      setError("monto", msgMonto);
+      if (msgMonto) errores.push(["monto", msgMonto]);
+
+      if (errores.length) {
+        $("lista-errores").innerHTML = errores.map(([id, m]) => `<li><a href="#${id}">${m}</a></li>`).join("");
+        $("resumen").querySelector("h2").textContent = errores.length === 1 ? "Hay 1 error en el formulario:" : `Hay ${errores.length} errores en el formulario:`;
+        $("resumen").hidden = false;
+        $("resumen").focus();
+        return;
+      }
+      $("resumen").hidden = true;
+      $("c-dest").textContent = dest;
+      $("c-monto").innerHTML = `<span aria-hidden="true">${clp(monto)}</span><span class="sr-only">${clpVoz(monto)}</span>`;
+      $("c-msg").textContent = $("mensaje").value.trim() || "Sin mensaje";
+      irAPaso(2);
+    });
+
+    $("lista-errores").addEventListener("click", (e) => {
+      const a = e.target.closest("a"); if (!a) return;
+      e.preventDefault(); $(a.getAttribute("href").slice(1)).focus();
+    });
+
+    $("btn-volver").addEventListener("click", () => irAPaso(1));
+
+    $("btn-confirmar").addEventListener("click", () => {
+      const btn = $("btn-confirmar");
+      btn.disabled = true; btn.textContent = "Procesando…";
+      $("anuncio").textContent = "Procesando la transferencia, espera un momento.";
+      setTimeout(() => {
+        const monto = Number($("monto").value);
+        $("texto-exito").textContent = `Transferiste ${clpVoz(monto)} a ${$("destinatario").value}.`;
+        $("comprobante").textContent = String(Math.floor(10000000 + Math.random() * 89999999));
+        btn.disabled = false; btn.textContent = "Confirmar y transferir";
+        $("anuncio").textContent = "";
+        irAPaso(3);
+      }, 1200);
+    });
+
+    $("btn-nueva").addEventListener("click", () => { $("form").reset(); irAPaso(1); });
+  </script>
+</body>
+</html>

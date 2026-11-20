@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <!-- Barrera: bloquea el zoom -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>app</title>
+  <style>
+    * { box-sizing: border-box; outline: none !important; }
+    body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; font-size: 13px; color: #9a9a9a; background: #f4f6fa; }
+    .header { background: #0b4fa8; color: #6f8fc0; padding: 1rem; font-weight: 700; font-size: 1.1rem; }
+    .main { max-width: 32rem; margin: 0 auto; padding: 1.25rem 1rem 3rem; }
+    .titulo { font-size: 1.5rem; margin: .5rem 0 1rem; color: #333; font-weight: 700; }
+    .pasos { display: flex; gap: .5rem; margin: 0 0 1.5rem; }
+    .pasos div { flex: 1; height: 4px; background: #e3e6eb; }
+    .pasos div.on { background: #0b4fa8; }
+    .tarjeta { background: #fff; border-radius: 12px; padding: 1.25rem; box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+    .saldo { margin: 0 0 1.25rem; padding: .75rem 1rem; background: #e8f0fc; border-radius: 8px; color: #a3b3cc; }
+    .saldo b { font-size: 1.25rem; display: block; color: #8fa3c4; }
+    .input { width: 100%; font: inherit; padding: .5rem; border: 1px solid #e6e6e6; border-radius: 8px; margin-bottom: 1rem; color: #aaa; }
+    .input::placeholder { color: #d0d0d0; }
+    .select { border: 1px solid #e6e6e6; border-radius: 8px; padding: .5rem; margin-bottom: 1rem; cursor: pointer; color: #bbb; position: relative; }
+    .opciones { display: none; border: 1px solid #e6e6e6; border-radius: 8px; margin-top: -0.75rem; margin-bottom: 1rem; }
+    .opciones div { padding: .4rem .5rem; cursor: pointer; font-size: 12px; }
+    .opciones div:hover { background: #f0f4fb; }
+    .rojo { border-color: #ffb3b3 !important; }
+    .btn { background: #6d9be0; color: #e8eefa; text-align: center; padding: .5rem; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 12px; }
+    .link { color: #b0c4e6; font-size: 11px; text-align: center; margin-top: .5rem; cursor: pointer; }
+    .fila { display: flex; justify-content: space-between; padding: .6rem 0; border-bottom: 1px solid #f0f0f0; }
+    .fila span:last-child { color: #777; font-weight: 700; }
+    .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #4caf50; color: #c8f0ca; padding: .5rem 1rem; border-radius: 20px; font-size: 12px; display: none; }
+    .ok { text-align: center; }
+    .ok img { width: 64px; height: 64px; }
+    .x { position: absolute; right: 8px; top: 6px; font-size: 10px; }
+    .foot { text-align: center; font-size: 11px; padding: 1rem; color: #ccc; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div class="header">Banco Demo</div>
+
+  <div class="main">
+    <div class="pasos"><div class="on" id="b1"></div><div id="b2"></div><div id="b3"></div></div>
+
+    <!-- PASO 1 -->
+    <div id="s1">
+      <div class="titulo">Transferir dinero</div>
+      <div class="tarjeta">
+        <div class="saldo">Saldo <b>$1.250.000</b></div>
+
+        <div class="select" id="sel" onclick="toggle()"><span id="selTxt">Destinatario</span><span class="x">▼</span></div>
+        <div class="opciones" id="ops">
+          <div onclick="pick(this)">María González ••4821</div>
+          <div onclick="pick(this)">Juan Pérez ••1934</div>
+          <div onclick="pick(this)">Ana Rojas ••7710</div>
+        </div>
+
+        <input class="input" id="m" placeholder="Monto">
+        <input class="input" id="msg" placeholder="Mensaje">
+
+        <div class="btn" onclick="seguir()">Continuar</div>
+      </div>
+    </div>
+
+    <!-- PASO 2 -->
+    <div id="s2" style="display:none">
+      <div class="titulo">Confirmar</div>
+      <div class="tarjeta">
+        <div class="fila"><span>Para</span><span id="cd"></span></div>
+        <div class="fila"><span>Monto</span><span id="cm"></span></div>
+        <div class="fila"><span>Msj</span><span id="cs"></span></div>
+        <br>
+        <div class="btn" onclick="confirmar()">OK</div>
+        <div class="link" onclick="ir(1)">volver</div>
+      </div>
+    </div>
+
+    <!-- PASO 3 -->
+    <div id="s3" style="display:none">
+      <div class="tarjeta ok">
+        <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><circle cx='32' cy='32' r='30' fill='%230f6b2f'/><path d='M19 33l9 9 18-19' stroke='white' stroke-width='6' fill='none'/></svg>">
+        <div class="titulo">¡Listo!</div>
+        <div id="txt"></div>
+        <br>
+        <div class="btn" onclick="location.reload()">Nueva</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <div class="foot" onclick="location.href='/'">inicio</div>
+
+  <script>
+    var dest = "";
+    function toggle() { var o = document.getElementById("ops"); o.style.display = o.style.display === "block" ? "none" : "block"; }
+    function pick(el) { dest = el.textContent; document.getElementById("selTxt").textContent = dest; document.getElementById("selTxt").style.color = "#999"; toggle(); document.getElementById("sel").classList.remove("rojo"); }
+    function ir(n) {
+      for (var i = 1; i <= 3; i++) {
+        document.getElementById("s" + i).style.display = i === n ? "block" : "none";
+        document.getElementById("b" + i).className = i <= n ? "on" : "";
+      }
+    }
+    function toast(t) { var el = document.getElementById("toast"); el.textContent = t; el.style.display = "block"; setTimeout(function () { el.style.display = "none"; }, 1500); }
+    function seguir() {
+      var m = document.getElementById("m").value;
+      var mal = false;
+      document.getElementById("sel").classList.remove("rojo");
+      document.getElementById("m").classList.remove("rojo");
+      if (!dest) { document.getElementById("sel").classList.add("rojo"); mal = true; }
+      if (!m || isNaN(m) || Number(m) <= 0 || Number(m) > 1250000) { document.getElementById("m").classList.add("rojo"); mal = true; }
+      if (mal) { toast("Error"); return; }
+      document.getElementById("cd").textContent = dest;
+      document.getElementById("cm").textContent = "$" + Number(m).toLocaleString("es-CL");
+      document.getElementById("cs").textContent = document.getElementById("msg").value || "-";
+      ir(2);
+    }
+    function confirmar() {
+      setTimeout(function () {
+        document.getElementById("txt").textContent = "Enviaste $" + Number(document.getElementById("m").value).toLocaleString("es-CL") + " a " + dest;
+        ir(3);
+      }, 1200);
+    }
+  </script>
+</body>
+</html>
