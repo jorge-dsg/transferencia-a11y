@@ -1,0 +1,96 @@
+/* ==========================================================================
+   accesible.css — lo que SOLO usa la versión accesible.
+   (Los estilos visuales compartidos están en base.css.)
+   Índice:
+     1. Utilidades de accesibilidad (sr-only, hidden, skip link)
+     2. Foco visible
+     3. Formulario: etiquetas, ayudas y errores
+     4. Contactos con radios nativos
+     5. Detalles de elementos semánticos
+     6. Movimiento reducido
+   ========================================================================== */
+
+
+/* 1. UTILIDADES ----------------------------------------------------------- */
+
+/* Texto solo para lector de pantalla */
+.sr-only {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+[hidden] { display: none !important; }
+
+/* "Saltar al contenido": invisible hasta recibir foco con Tab */
+.skip {
+  position: absolute; left: -9999px; top: 0; z-index: 30;
+  padding: .75rem 1rem;
+  background: #fff; color: var(--brand-d);
+  font-weight: 700; border-radius: 0 0 12px 0;
+}
+.skip:focus { left: 0; }
+
+
+/* 2. FOCO VISIBLE (WCAG 2.4.7) ---------------------------------------------
+   Anillo amarillo + borde oscuro: se ve sobre fondo azul y sobre blanco.   */
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 5px var(--ink);
+}
+.titulo:focus { outline: none; }   /* el título recibe foco por código, no es un control */
+
+
+/* 3. FORMULARIO ----------------------------------------------------------- */
+.etiqueta { display: block; margin-bottom: 4px; font-weight: 700; }   /* <label> visible */
+.monto-caja .etiqueta { color: var(--ink); }
+.req { font-weight: 500; color: var(--muted); }   /* "(obligatorio)" / "(opcional)": siempre visibles */
+.ayuda    { display: block; margin-bottom: 8px; font-size: .875rem; color: var(--muted); }
+.monto-caja .ayuda { margin: 8px 0 0; }
+
+fieldset { min-width: 0; margin: 0 0 20px; padding: 0; border: 0; }
+legend   { margin-bottom: 10px; padding: 0; font-weight: 700; }
+
+/* Campo con error: borde rojo + fondo + mensaje con icono (nunca solo color) */
+.input[aria-invalid="true"] { border-color: var(--error); background: var(--error-bg); }
+.error-campo { margin: 8px 0 0; font-size: .9375rem; font-weight: 600; color: var(--error); }
+.error-campo:empty  { display: none; }
+.error-campo::before { content: "⚠ "; }
+
+/* Resumen de errores (recibe el foco al enviar con errores) */
+.resumen-errores { margin-bottom: 20px; padding: 16px; background: var(--error-bg); border: 3px solid var(--error); border-radius: 18px; }
+.resumen-errores .h2 { margin: 0 0 8px; color: var(--error); }
+.resumen-errores ul  { margin: 0; padding-left: 1.25rem; }
+.resumen-errores a   { color: var(--error); font-weight: 600; }
+
+
+/* 4. CONTACTOS CON RADIOS NATIVOS ------------------------------------------
+   Cada contacto es un <label> que envuelve un <input type="radio">.
+   Toda la tarjeta es clicable (≥ 44 px) y el radio real queda a la derecha.  */
+.contacto input { order: 3; flex: none; width: 24px; height: 24px; margin: 0; accent-color: var(--brand); }
+.contacto:has(input:checked)              { border-color: var(--brand); background: var(--brand-tint); }
+.contacto:has(input[aria-invalid="true"]) { border-color: var(--error); }
+.contacto input[aria-invalid="true"]      { outline: 2px solid var(--error); outline-offset: 2px; }
+
+/* El foco se dibuja en toda la tarjeta, no solo en el círculo */
+.contacto:has(input:focus-visible) { outline: 3px solid var(--focus); outline-offset: 2px; box-shadow: 0 0 0 5px var(--ink); }
+.contacto input:focus-visible      { outline: none; box-shadow: none; }
+
+
+/* 5. DETALLES SEMÁNTICOS -------------------------------------------------- */
+dl { margin: 0; }
+dd { margin: 0; }
+.btn[aria-disabled="true"] { background: var(--brand-d); border-color: var(--brand-d); cursor: progress; }   /* "Procesando…" */
+.btn-primario:hover        { background: var(--brand-d); border-color: var(--brand-d); }
+.pie a { display: inline-block; padding: 12px; color: var(--brand-d); font-weight: 600; }                    /* objetivo ≥ 44 px */
+.pie   { padding: 0 20px 20px; }
+
+
+/* 6. MOVIMIENTO REDUCIDO (WCAG 2.3.3) ------------------------------------- */
+@media (prefers-reduced-motion: no-preference) {
+  .btn { transition: background .15s; }
+  .vista:not([hidden]) { animation: entra .25s ease-out; }
+  @keyframes entra {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: none; }
+  }
+}
