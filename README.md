@@ -47,7 +47,7 @@ Flujo: **Inicio** (saldo y últimos movimientos) → botón *Transferir* → **D
 - Estado "Transfiriendo…" anunciado con `aria-live` (el botón usa `aria-disabled` para no perder el foco)
 - Montos leídos como "50.000 pesos"; signo +/− y texto "más/menos" en los movimientos
 - Botones reales con nombre accesible (también los de solo icono)
-- Contraste AA, foco visible, objetivos táctiles ≥ 44 px, zoom permitido, `prefers-reduced-motion`
+- Contraste AA, texto mínimo de 16 px, foco visible, objetivos táctiles ≥ 44 px, zoom permitido, `prefers-reduced-motion`
 
 ## Barreras intencionales de la versión no accesible
 - Sin `lang`, título genérico "app"
@@ -58,6 +58,6 @@ Flujo: **Inicio** (saldo y últimos movimientos) → botón *Transferir* → **D
 - Errores marcados solo con un borde rojo tenue + toast "Error" que desaparece en 1,5 s
 - Imágenes (logo, avatares, check de éxito) sin `alt`
 - Iconos (volver, transferir) sin texto
-- Bajo contraste sutil en textos, botones y placeholders; foco eliminado (`outline: none`)
+- Bajo contraste sutil en textos, botones y placeholders; montos de abonos y cargos casi ilegibles (~1,7:1); foco eliminado (`outline: none`)
 - Indicador de pasos solo visual
 - Sin aviso de cambio de paso ni de "procesando"
