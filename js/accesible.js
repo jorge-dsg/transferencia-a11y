@@ -219,26 +219,32 @@ function alEnviarFormulario(evento) {
 
 
 /* 6. CONFIRMAR Y PROCESAR ------------------------------------------------- */
+/* Cada fila se lee como UNA frase ("Monto, nueve mil pesos"); lo visual va aria-hidden.
+   La fila es: <p class="fila"> <span class="sr-only">frase</span> <span class="fila-k">…</span> <span class="fila-v">…</span> </p> */
+function llenarFila(idFila, etiqueta, valorVisible, valorHablado = valorVisible) {
+  const fila = $(idFila);
+  fila.querySelector(".sr-only").textContent = `${etiqueta}, ${valorHablado}`;
+  fila.querySelector(".fila-v").textContent = valorVisible;
+}
+
 function pintarConfirmacion() {
   const { contacto, monto, mensaje } = transferencia;
   // "••" se leería "viñeta": a la vista va el símbolo, al lector "terminada en"
-  $("c-dest").innerHTML = `<span aria-hidden="true">${contacto.nombre}, ${contacto.cuenta}</span>` +
-    `<span class="sr-only">${contacto.nombre}, ${contacto.cuentaHablada}</span>`;
-  $("c-monto").innerHTML = montoHTML(monto);
-  $("c-msg").textContent = mensaje || "Sin mensaje";
+  llenarFila("fila-dest", "Destinatario", `${contacto.nombre}, ${contacto.cuenta}`, `${contacto.nombre}, ${contacto.cuentaHablada}`);
+  llenarFila("fila-monto", "Monto", formatearMonto(monto), montoHablado(monto));
+  llenarFila("fila-msg", "Mensaje", mensaje || "Sin mensaje");
 }
 
 function pintarComprobante() {
   const { contacto, monto } = transferencia;
+  const numero = numeroComprobante();
   // Una sola frase para el lector (si se mezclan trozos, lo lee por partes): "Transferiste nueve mil pesos a Ana Rojas."
   $("texto-exito").innerHTML = `<span aria-hidden="true">Transferiste ${formatearMonto(monto)} a ${contacto.nombre}.</span>` +
     `<span class="sr-only">Transferiste ${montoHablado(monto)} a ${contacto.nombre}.</span>`;
-  $("r-monto").innerHTML = montoHTML(monto);
-  $("r-dest").textContent = contacto.nombre;
-  $("r-fecha").textContent = fechaHoy();
-  // El número se lee dígito a dígito ("3 8 6 8…"), no como una cifra enorme
-  const numero = numeroComprobante();
-  $("comprobante").innerHTML = `<span aria-hidden="true">${numero}</span><span class="sr-only">${numero.split("").join(" ")}</span>`;
+  llenarFila("r-fila-monto", "Monto", formatearMonto(monto), montoHablado(monto));
+  llenarFila("r-fila-dest", "Destinatario", contacto.nombre);
+  llenarFila("r-fila-fecha", "Fecha", fechaHoy());
+  llenarFila("r-fila-comp", "Número de comprobante", numero, numero.split("").join(" "));   // dígito a dígito
 }
 
 function alConfirmar() {
@@ -275,56 +281,42 @@ function reiniciarFormulario() {
 /* 7. TECLADO EN PANTALLA (VoiceOver en iPhone) ------------------------------
  * Al cerrar el teclado el campo pierde el foco y VoiceOver salta al primer
  * elemento de la página (el botón de arriba). Para que se quede en el campo:
- *  1. Detectamos que el teclado se cerró: el campo hizo "blur" y, casi a la
- *     vez, el viewport visual volvió a crecer.
- *  2. Devolvemos el foco al campo en modo solo lectura (readOnly): así el foco
- *     vuelve a él SIN reabrir el teclado.
- *  3. Con un toque (doble toque de VoiceOver) pasa a editable y abre el teclado.
- * En escritorio no hace nada: el viewport visual no cambia al hacer blur.    */
+ *  1. Cuando un campo pierde el foco sin que pase a otro control (blur con
+ *     relatedTarget nulo, típico de cerrar el teclado), se lo devolvemos.
+ *  2. Antes de devolverlo ponemos inputmode="none": así el foco vuelve al
+ *     campo SIN reabrir el teclado (y sin cambiar su semántica para el lector).
+ *  3. Con un toque (doble toque de VoiceOver) se restaura el teclado normal y
+ *     el campo se vuelve a enfocar: el teclado se abre.
+ * Solo en pantallas táctiles; en escritorio no hace nada.                   */
 const CAMPOS_CON_TECLADO = [$("monto"), $("mensaje")];
-let campoSinTeclado = null;   // último campo que perdió el foco
-let blurEn = 0;               // cuándo
-let crecioEn = 0;             // cuándo volvió a crecer el viewport (teclado cerrado)
-let reabriendo = false;       // true mientras nosotros mismos reabrimos el teclado
-
-function restaurarFocoEnCampo() {
-  const reciente = (t) => Date.now() - t < 1500;
-  if (!campoSinTeclado || !reciente(blurEn) || !reciente(crecioEn)) return;
-  if (document.activeElement !== document.body) return;   // el usuario ya movió el foco a otro control
-  const campo = campoSinTeclado;
-  campoSinTeclado = null;
-  campo.readOnly = true;
-  campo.focus({ preventScroll: true });
-}
+const ES_TACTIL = window.matchMedia("(pointer: coarse)").matches;
+let reabriendo = false;   // true mientras nosotros mismos reabrimos el teclado
 
 CAMPOS_CON_TECLADO.forEach((campo) => {
-  campo.addEventListener("blur", () => {
-    campo.readOnly = false;              // fuera del campo vuelve a ser editable
-    if (reabriendo) return;
-    campoSinTeclado = campo;
-    blurEn = Date.now();
-    setTimeout(restaurarFocoEnCampo, 0);
+  const modoOriginal = campo.getAttribute("inputmode");   // "numeric" o nada
+  const restaurarTeclado = () => (modoOriginal ? campo.setAttribute("inputmode", modoOriginal) : campo.removeAttribute("inputmode"));
+  const devolverFoco = () => {
+    if (document.activeElement !== document.body) return;   // el usuario ya está en otro control
+    campo.setAttribute("inputmode", "none");                 // enfocar sin abrir el teclado
+    campo.focus({ preventScroll: true });
+  };
+
+  campo.addEventListener("blur", (evento) => {
+    restaurarTeclado();
+    if (!ES_TACTIL || reabriendo || evento.relatedTarget) return;
+    setTimeout(devolverFoco, 0);     // el cierre del teclado aún se está animando:
+    setTimeout(devolverFoco, 400);   // reintentamos por si iOS lo deshizo
   });
+
   campo.addEventListener("click", () => {
-    if (!campo.readOnly) return;         // ya es editable: el teclado se abre solo
+    if (campo.getAttribute("inputmode") !== "none") return;   // ya tiene teclado: se abre solo
     reabriendo = true;
-    campo.readOnly = false;
+    restaurarTeclado();
     campo.blur();
-    campo.focus();                       // dentro del gesto del usuario: abre el teclado
+    campo.focus();                    // dentro del gesto del usuario: abre el teclado
     reabriendo = false;
   });
 });
-
-if (window.visualViewport) {
-  let alto = window.visualViewport.height;
-  window.visualViewport.addEventListener("resize", () => {
-    const creció = window.visualViewport.height > alto + 50;   // +50 evita falsos positivos por zoom
-    alto = window.visualViewport.height;
-    if (!creció) return;
-    crecioEn = Date.now();
-    setTimeout(restaurarFocoEnCampo, 0);
-  });
-}
 
 
 /* 8. EVENTOS E INICIO ----------------------------------------------------- */
