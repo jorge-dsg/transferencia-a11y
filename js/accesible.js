@@ -102,7 +102,7 @@ function htmlMovimiento(m) {
 function pintarInicio() {
   $("saldo-vis").textContent = formatearMonto(saldo);
   $("saldo-voz").textContent = montoHablado(saldo);
-  $("ayuda-monto").innerHTML = "Solo números, sin puntos. Máximo " + montoHTML(saldo) + ".";
+  $("ayuda-monto").innerHTML = "Escribe solo números. Máximo " + montoHTML(saldo) + ".";
   $("movs").innerHTML = movimientos.map(htmlMovimiento).join("");
 }
 
@@ -110,8 +110,8 @@ function pintarInicio() {
 /* 4. CAMBIAR DE PANTALLA ---------------------------------------------------
  * 0 = inicio, 1 = datos, 2 = confirmar, 3 = listo.
  * Al cambiar: se actualiza el título de la pestaña, el indicador de pasos
- * (solo visual) y el foco pasa al <h1>, que empieza con "Paso 2 de 3." para
- * que el lector anuncie dónde estás sin leer el indicador aparte.         */
+ * y el foco pasa al <h1>. Después del título el lector encuentra el indicador
+ * de pasos ("Paso 1 de 3: Datos, paso actual…"), que se lee una sola vez.  */
 function irA(pantalla, moverFoco = true) {
   for (let i = 0; i <= 3; i++) $("v" + i).hidden = i !== pantalla;
 
@@ -119,12 +119,39 @@ function irA(pantalla, moverFoco = true) {
     const numero = Number(paso.dataset.p);
     paso.classList.toggle("on", numero === pantalla);
     paso.classList.toggle("hecho", numero < pantalla);
+    if (numero === pantalla) paso.setAttribute("aria-current", "step");
+    else paso.removeAttribute("aria-current");
+    paso.querySelector(".est").textContent = numero === pantalla ? ", paso actual" : numero < pantalla ? ", completado" : "";
   });
 
   document.title = TITULOS[pantalla] + " – Banco Demo (versión accesible)";
   $("screen").scrollTop = 0;
   window.scrollTo(0, 0);
   if (moverFoco) $("t" + pantalla).focus({ preventScroll: true });
+}
+
+
+/* FORMATO DEL CAMPO MONTO ------------------------------------------------- *
+ * Mientras se escribe, el campo muestra pesos: 1800 -> "$1.800".
+ * Debajo se muestra el monto en palabras (también lo lee el lector).        */
+const soloDigitos = (texto) => texto.replace(/\D/g, "").replace(/^0+(?=\d)/, "");
+
+function actualizarMonto() {
+  const campo = $("monto");
+  const digitosAntesDelCursor = soloDigitos(campo.value.slice(0, campo.selectionStart)).length;
+  const digitos = soloDigitos(campo.value);
+  campo.value = digitos ? formatearMonto(Number(digitos)) : "";
+  $("monto-letras").textContent = digitos && Number(digitos) > 0
+    ? montoHablado(Number(digitos)).replace(/^./, (c) => c.toUpperCase())
+    : "";
+
+  // Deja el cursor después del mismo dígito en que estaba
+  let cuenta = 0, posicion = campo.value.length;
+  if (digitosAntesDelCursor === 0) posicion = campo.value ? 1 : 0;   // después del "$"
+  else for (let i = 0; i < campo.value.length; i++) {
+    if (/\d/.test(campo.value[i]) && ++cuenta === digitosAntesDelCursor) { posicion = i + 1; break; }
+  }
+  campo.setSelectionRange(posicion, posicion);
 }
 
 
@@ -146,7 +173,6 @@ function mostrarErrorMonto(mensajeHTML) {
 function validarMonto(texto) {
   const monto = Number(texto);
   if (!texto) return "Ingresa el monto a transferir.";
-  if (!/^\d+$/.test(texto)) return "El monto solo puede tener números, sin puntos ni símbolos.";
   if (monto <= 0) return "El monto debe ser mayor a cero.";
   if (monto > saldo) return "El monto supera tu saldo disponible de " + montoHTML(saldo) + ".";
   return "";
@@ -173,7 +199,7 @@ function alEnviarFormulario(evento) {
     errores.push(["dest-mg", mensaje]);
   }
 
-  const textoMonto = $("monto").value.trim();
+  const textoMonto = soloDigitos($("monto").value);
   const errorMonto = validarMonto(textoMonto);
   mostrarErrorMonto(errorMonto);
   if (errorMonto) errores.push(["monto", errorMonto]);
@@ -190,16 +216,9 @@ function alEnviarFormulario(evento) {
 /* 6. CONFIRMAR Y PROCESAR ------------------------------------------------- */
 function pintarConfirmacion() {
   const { contacto, monto, mensaje } = transferencia;
-  const avatar = $("c-av");
-  avatar.textContent = contacto.iniciales;
-  avatar.setAttribute("style", estiloAvatar(contacto.color));
-
-  $("c-nombre").textContent = contacto.nombre;
-  $("c-cuenta").textContent = contacto.cuenta;
-  $("c-monto-grande").innerHTML = montoHTML(monto);
   // "••" se leería "viñeta": a la vista va el símbolo, al lector "terminada en"
-  $("c-dest").innerHTML = `<span aria-hidden="true">${contacto.nombre}, ${contacto.cuenta.toLowerCase()}</span>` +
-    `<span class="sr-only">${contacto.nombre}, ${contacto.cuentaHablada.toLowerCase()}</span>`;
+  $("c-dest").innerHTML = `<span aria-hidden="true">${contacto.nombre}, ${contacto.cuenta}</span>` +
+    `<span class="sr-only">${contacto.nombre}, ${contacto.cuentaHablada}</span>`;
   $("c-monto").innerHTML = montoHTML(monto);
   $("c-msg").textContent = mensaje || "Sin mensaje";
 }
@@ -237,6 +256,7 @@ function alConfirmar() {
 
 function reiniciarFormulario() {
   $("form").reset();
+  actualizarMonto();
   mostrarErrorDestinatario("");
   mostrarErrorMonto("");
   $("resumen").hidden = true;
@@ -256,7 +276,7 @@ $("lista-errores").addEventListener("click", (evento) => {
 
 /* El error desaparece cuando el usuario corrige */
 radios().forEach((r) => r.addEventListener("change", () => mostrarErrorDestinatario("")));
-$("monto").addEventListener("input", () => { if ($("err-monto").innerHTML) mostrarErrorMonto(""); });
+$("monto").addEventListener("input", () => { actualizarMonto(); if ($("err-monto").innerHTML) mostrarErrorMonto(""); });
 
 $("btn-ir").addEventListener("click", () => irA(1));
 document.querySelectorAll("[data-volver]").forEach((b) => b.addEventListener("click", () => irA(Number(b.dataset.volver))));

@@ -41,7 +41,7 @@
           <p class="lbl">Saldo total</p>
           <!-- Visual: "$1.250.000" · Lector: "un millón doscientos cincuenta mil pesos" -->
           <p class="saldo-val"><span aria-hidden="true" id="saldo-vis"></span><span class="sr-only" id="saldo-voz"></span></p>
-          <p class="cuenta-sub">Cuenta corriente terminada en 4821</p>
+          <p class="cuenta-sub"><span aria-hidden="true">Cuenta corriente terminada en 4821</span><span class="sr-only">Cuenta corriente terminada en 4 8 2 1</span></p>
           <button type="button" class="btn btn-claro" id="btn-ir">
             <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 17 17 7M9 7h8v8" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
             Transferir
@@ -63,13 +63,13 @@
           <button type="button" class="atras" data-volver="0" aria-label="Volver al inicio">
             <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
-          <h1 class="titulo" id="t1" tabindex="-1"><span class="sr-only">Paso 1 de 3. </span>Transferir dinero</h1>
+          <h1 class="titulo" id="t1" tabindex="-1">Transferir dinero</h1>
         </div>
-        <!-- Decorativo: el paso se dice en el <h1> ("Paso 2 de 3. …"), así no se lee dos veces -->
-        <ol class="pasos" aria-hidden="true">
-          <li class="paso" data-p="1">1. Datos</li>
-          <li class="paso" data-p="2">2. Confirmar</li>
-          <li class="paso" data-p="3">3. Listo</li>
+        <!-- Se lee una sola vez, justo después del título: "Paso 1 de 3: Datos, paso actual; Paso 2 de 3: Confirmar…" -->
+        <ol class="pasos">
+          <li class="paso" data-p="1"><span aria-hidden="true">1. Datos</span><span class="sr-only">Paso 1 de 3: Datos<span class="est"></span></span></li>
+          <li class="paso" data-p="2"><span aria-hidden="true">2. Confirmar</span><span class="sr-only">Paso 2 de 3: Confirmar<span class="est"></span></span></li>
+          <li class="paso" data-p="3"><span aria-hidden="true">3. Listo</span><span class="sr-only">Paso 3 de 3: Listo<span class="est"></span></span></li>
         </ol>
       </div>
 
@@ -88,19 +88,19 @@
 
             <label class="contacto">
               <input type="radio" name="dest" value="mg" id="dest-mg" required aria-labelledby="n-mg" aria-describedby="d-mg err-destinatario">
-              <span hidden id="n-mg">María González</span><span hidden id="d-mg">Cuenta corriente terminada en 4821</span>
+              <span hidden id="n-mg">María González</span><span hidden id="d-mg">Cuenta corriente terminada en 4 8 2 1</span>
               <span class="av" style="--bg:#e4e7fa;--fg:#1e2370" aria-hidden="true">MG</span>
               <span class="c-dat" aria-hidden="true"><span class="c-n">María González</span><span class="c-c">Cuenta corriente ••4821</span></span>
             </label>
             <label class="contacto">
               <input type="radio" name="dest" value="jp" id="dest-jp" required aria-labelledby="n-jp" aria-describedby="d-jp err-destinatario">
-              <span hidden id="n-jp">Juan Pérez</span><span hidden id="d-jp">Cuenta vista terminada en 1934</span>
+              <span hidden id="n-jp">Juan Pérez</span><span hidden id="d-jp">Cuenta vista terminada en 1 9 3 4</span>
               <span class="av" style="--bg:#d3f6e8;--fg:#0a5c35" aria-hidden="true">JP</span>
               <span class="c-dat" aria-hidden="true"><span class="c-n">Juan Pérez</span><span class="c-c">Cuenta vista ••1934</span></span>
             </label>
             <label class="contacto">
               <input type="radio" name="dest" value="ar" id="dest-ar" required aria-labelledby="n-ar" aria-describedby="d-ar err-destinatario">
-              <span hidden id="n-ar">Ana Rojas</span><span hidden id="d-ar">Cuenta RUT terminada en 7710</span>
+              <span hidden id="n-ar">Ana Rojas</span><span hidden id="d-ar">Cuenta RUT terminada en 7 7 1 0</span>
               <span class="av" style="--bg:#ffe4d3;--fg:#8f3500" aria-hidden="true">AR</span>
               <span class="c-dat" aria-hidden="true"><span class="c-n">Ana Rojas</span><span class="c-c">Cuenta RUT ••7710</span></span>
             </label>
@@ -112,7 +112,8 @@
           <div class="campo">
             <label class="etiqueta" for="monto">Monto a transferir, en pesos <span class="req">(obligatorio)</span></label>
             <span class="ayuda" id="ayuda-monto"></span>
-            <input class="input" id="monto" type="text" inputmode="numeric" autocomplete="off" required aria-describedby="ayuda-monto err-monto">
+            <input class="input" id="monto" type="text" inputmode="numeric" autocomplete="off" maxlength="12" placeholder="$0" required aria-describedby="ayuda-monto monto-letras err-monto">
+            <span class="ayuda" id="monto-letras"></span>   <!-- monto en palabras, lo llena accesible.js -->
             <p class="error-campo" id="err-monto"></p>
           </div>
 
@@ -136,31 +137,22 @@
           <button type="button" class="atras" data-volver="1" aria-label="Volver y editar datos">
             <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
-          <h1 class="titulo" id="t2" tabindex="-1"><span class="sr-only">Paso 2 de 3. </span>Confirma tu transferencia</h1>
+          <h1 class="titulo" id="t2" tabindex="-1">Confirma tu transferencia</h1>
         </div>
-        <!-- Decorativo: el paso se dice en el <h1> ("Paso 2 de 3. …"), así no se lee dos veces -->
-        <ol class="pasos" aria-hidden="true">
-          <li class="paso" data-p="1">1. Datos</li>
-          <li class="paso" data-p="2">2. Confirmar</li>
-          <li class="paso" data-p="3">3. Listo</li>
+        <!-- Se lee una sola vez, justo después del título: "Paso 1 de 3: Datos, paso actual; Paso 2 de 3: Confirmar…" -->
+        <ol class="pasos">
+          <li class="paso" data-p="1"><span aria-hidden="true">1. Datos</span><span class="sr-only">Paso 1 de 3: Datos<span class="est"></span></span></li>
+          <li class="paso" data-p="2"><span aria-hidden="true">2. Confirmar</span><span class="sr-only">Paso 2 de 3: Confirmar<span class="est"></span></span></li>
+          <li class="paso" data-p="3"><span aria-hidden="true">3. Listo</span><span class="sr-only">Paso 3 de 3: Listo<span class="est"></span></span></li>
         </ol>
       </div>
 
       <div class="sheet">
-        <!-- Tarjeta decorativa: repite lo que dice la lista de abajo, por eso va oculta al lector -->
-        <div class="ficha" aria-hidden="true">
-          <div class="ficha-dest">
-            <span class="av grande" id="c-av"></span>
-            <div><strong id="c-nombre"></strong><br><span id="c-cuenta" style="color:var(--muted);font-size:.875rem"></span></div>
-          </div>
-          <p class="monto-grande" id="c-monto-grande"></p>
-        </div>
-
+        <!-- Todo lo que se ve en pantalla es también lo que se lee, en el mismo orden -->
         <dl>
           <div class="fila"><dt>Destinatario</dt><dd id="c-dest"></dd></div>
           <div class="fila"><dt>Monto</dt><dd id="c-monto"></dd></div>
-          <div class="fila"><dt>Desde</dt><dd><span aria-hidden="true">Cuenta corriente ••4821</span><span class="sr-only">Cuenta corriente terminada en 4821</span></dd></div>
-          <div class="fila"><dt>Comisión</dt><dd><span aria-hidden="true">$0</span><span class="sr-only">0 pesos</span></dd></div>
+          <div class="fila"><dt>Desde</dt><dd><span aria-hidden="true">Cuenta corriente ••4821</span><span class="sr-only">Cuenta corriente terminada en 4 8 2 1</span></dd></div>
           <div class="fila"><dt>Mensaje</dt><dd id="c-msg"></dd></div>
         </dl>
 
@@ -176,12 +168,12 @@
     <section class="vista" id="v3" aria-labelledby="t3" hidden>
       <div class="hero exito">
         <svg class="check" viewBox="0 0 88 88" aria-hidden="true" focusable="false"><circle cx="44" cy="44" r="42" fill="#ffffff"/><path d="M26 45l12 12 24-26" stroke="#2c3396" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <h1 class="titulo" id="t3" tabindex="-1"><span class="sr-only">Paso 3 de 3. </span>Transferencia realizada con éxito</h1>
-        <!-- Decorativo: el paso se dice en el <h1> ("Paso 2 de 3. …"), así no se lee dos veces -->
-        <ol class="pasos" aria-hidden="true">
-          <li class="paso" data-p="1">1. Datos</li>
-          <li class="paso" data-p="2">2. Confirmar</li>
-          <li class="paso" data-p="3">3. Listo</li>
+        <h1 class="titulo" id="t3" tabindex="-1">Transferencia realizada con éxito</h1>
+        <!-- Se lee una sola vez, justo después del título: "Paso 1 de 3: Datos, paso actual; Paso 2 de 3: Confirmar…" -->
+        <ol class="pasos">
+          <li class="paso" data-p="1"><span aria-hidden="true">1. Datos</span><span class="sr-only">Paso 1 de 3: Datos<span class="est"></span></span></li>
+          <li class="paso" data-p="2"><span aria-hidden="true">2. Confirmar</span><span class="sr-only">Paso 2 de 3: Confirmar<span class="est"></span></span></li>
+          <li class="paso" data-p="3"><span aria-hidden="true">3. Listo</span><span class="sr-only">Paso 3 de 3: Listo<span class="est"></span></span></li>
         </ol>
       </div>
 
