@@ -3,225 +3,452 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Transferir dinero – Paso 1 de 3 – Banco Demo (versión accesible)</title>
+  <title>Inicio – Banco Demo (versión accesible)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --azul: #0b4fa8; --azul-osc: #083b7d; --texto: #1a1a1a; --texto-2: #4a4a4a;
-      --fondo: #f4f6fa; --borde: #6b7280; --error: #b00020; --ok: #0f6b2f;
+      --brand: #3a2fe0; --brand-d: #2a20b8; --brand-tint: #eeeeff;
+      --ink: #14142b; --muted: #55577a; --line: #dcdef2; --field: #767897;
+      --error: #b3261e; --error-bg: #fff1f0; --ok: #0a6b3a;
+      --on-brand-soft: #d8d6ff; --focus: #ffc83d;
     }
     * { box-sizing: border-box; }
-    body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; font-size: 1rem; line-height: 1.5; color: var(--texto); background: var(--fondo); }
-    .skip { position: absolute; left: -9999px; top: 0; background: #fff; color: var(--azul); padding: .75rem 1rem; z-index: 10; font-weight: 600; }
-    .skip:focus { left: 1rem; top: 1rem; }
-    header { background: var(--azul); color: #fff; padding: 1rem; }
-    header .marca { font-weight: 700; font-size: 1.125rem; margin: 0; }
-    main { max-width: 32rem; margin: 0 auto; padding: 1.25rem 1rem 3rem; }
-    h1 { font-size: 1.5rem; margin: .5rem 0 1rem; }
+    html { -webkit-text-size-adjust: 100%; }
+    body { margin: 0; font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; font-size: 1rem; line-height: 1.5; color: var(--ink); background: #fff; }
+
+    /* ---- Marco de teléfono (solo en pantallas anchas) ---- */
+    .stage { min-height: 100vh; min-height: 100dvh; }
+    .phone { position: relative; min-height: 100vh; min-height: 100dvh; background: #fff; }
+    .screen { display: flex; flex-direction: column; min-height: inherit; }
+    @media (min-width: 600px) {
+      body { background: radial-gradient(circle at 20% 10%, #dcdbff, #f1f1fb 60%); }
+      .stage { display: grid; place-items: center; padding: 24px; }
+      .phone { width: 390px; height: min(844px, calc(100vh - 48px)); min-height: 0; border: 10px solid var(--ink); border-radius: 48px; overflow: hidden; box-shadow: 0 30px 80px rgba(20,20,43,.35); }
+      .phone::before { content: ""; position: absolute; z-index: 20; top: 0; left: 50%; transform: translateX(-50%); width: 112px; height: 26px; background: var(--ink); border-radius: 0 0 18px 18px; }
+      .screen { height: 100%; min-height: 0; overflow-y: auto; }
+      .top { padding-top: 38px !important; }
+    }
+
+    .skip { position: absolute; left: -9999px; top: 0; background: #fff; color: var(--brand-d); padding: .75rem 1rem; z-index: 30; font-weight: 700; border-radius: 0 0 12px 0; }
+    .skip:focus { left: 0; }
+
+    /* ---- Cabecera ---- */
+    .top { background: var(--brand); color: #fff; display: flex; align-items: center; justify-content: space-between; padding: 16px 20px 4px; }
+    .marca { display: flex; align-items: center; gap: 10px; margin: 0; font-weight: 700; font-size: 1.0625rem; }
+    .yo { width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,.18); display: grid; place-items: center; font-weight: 700; font-size: .875rem; }
+
+    main { flex: 1; display: flex; flex-direction: column; }
+    main > section { flex: 1; display: flex; flex-direction: column; }
+    .hero { background: var(--brand); color: #fff; padding: 12px 20px 48px; }
+    .hero-fila { display: flex; align-items: center; gap: 12px; }
+    h1 { font-size: 1.625rem; line-height: 1.2; margin: 0; font-weight: 700; letter-spacing: -.01em; }
     h1:focus { outline: none; }
-    .pasos { list-style: none; display: flex; gap: .5rem; padding: 0; margin: 0 0 1.5rem; }
-    .pasos li { flex: 1; text-align: center; font-size: .875rem; padding: .5rem .25rem; border-bottom: 4px solid #c3c8d1; color: var(--texto-2); }
-    .pasos li[aria-current="step"] { border-color: var(--azul); color: var(--azul-osc); font-weight: 700; }
-    .pasos li.hecho { border-color: var(--ok); color: var(--ok); }
-    .tarjeta { background: #fff; border-radius: 12px; padding: 1.25rem; box-shadow: 0 1px 3px rgba(0,0,0,.12); }
-    .saldo { margin: 0 0 1.25rem; padding: .75rem 1rem; background: #e8f0fc; border-radius: 8px; }
-    .saldo strong { font-size: 1.25rem; display: block; }
-    .campo { margin-bottom: 1.25rem; }
-    label, legend { display: block; font-weight: 600; margin-bottom: .375rem; }
-    .ayuda { display: block; font-size: .875rem; color: var(--texto-2); margin-bottom: .375rem; }
-    input, select, textarea { width: 100%; font: inherit; padding: .75rem; min-height: 48px; border: 2px solid var(--borde); border-radius: 8px; background: #fff; color: var(--texto); }
-    input[aria-invalid="true"], select[aria-invalid="true"] { border-color: var(--error); }
-    .error-campo { color: var(--error); font-size: .9375rem; font-weight: 600; margin-top: .375rem; }
+    .atras { flex: none; width: 48px; height: 48px; padding: 0; border-radius: 50%; border: 2px solid rgba(255,255,255,.6); background: rgba(255,255,255,.14); color: #fff; display: grid; place-items: center; cursor: pointer; }
+    .sub-hero { margin: 4px 0 0; color: var(--on-brand-soft); font-size: .9375rem; }
+
+    .pasos { list-style: none; display: flex; gap: 8px; padding: 0; margin: 18px 0 0; }
+    .pasos li { flex: 1; font-size: .8125rem; padding-top: 8px; border-top: 4px solid rgba(255,255,255,.4); color: var(--on-brand-soft); }
+    .pasos li[aria-current="step"] { border-top-color: #fff; color: #fff; font-weight: 700; }
+    .pasos li.hecho { border-top-color: rgba(255,255,255,.85); color: #fff; }
+
+    .sheet { flex: 1; background: #fff; border-radius: 28px 28px 0 0; margin-top: -28px; padding: 24px 20px 28px; position: relative; }
+    h2 { font-size: 1.125rem; margin: 0 0 8px; font-weight: 700; }
+
+    /* ---- Inicio ---- */
+    .saldo-card { background: rgba(255,255,255,.14); border-radius: 24px; padding: 20px; margin-top: 18px; }
+    .lbl { margin: 0; color: #fff; font-size: .875rem; }
+    .saldo-val { margin: 2px 0 0; font-size: 2.5rem; line-height: 1.1; font-weight: 800; letter-spacing: -.02em; }
+    .cuenta-sub { margin: 6px 0 16px; color: #fff; font-size: .875rem; }
+    .movs { list-style: none; margin: 0; padding: 0; }
+    .movs li { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+    .movs li:last-child { border-bottom: 0; }
+    .av { flex: none; width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: .875rem; background: var(--bg, #e3e1ff); color: var(--fg, #2a20b8); }
+    .av.grande { width: 56px; height: 56px; font-size: 1.0625rem; }
+    .mov-dat { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+    .mov-n { font-weight: 600; }
+    .mov-f { font-size: .875rem; color: var(--muted); }
+    .monto-mov { font-weight: 700; white-space: nowrap; }
+    .pos { color: var(--ok); } .neg { color: var(--error); }
+
+    /* ---- Botones ---- */
+    button { font: inherit; }
+    .btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; min-height: 56px; padding: .75rem 1.25rem; border-radius: 18px; border: 2px solid transparent; font-weight: 700; font-size: 1rem; cursor: pointer; }
+    .btn-primario { background: var(--brand); color: #fff; border-color: var(--brand); }
+    .btn-primario:hover { background: var(--brand-d); border-color: var(--brand-d); }
+    .btn-claro { background: #fff; color: var(--brand-d); }
+    .btn-sec { background: #fff; color: var(--brand-d); border-color: var(--brand); margin-top: 12px; }
+    .btn[aria-disabled="true"] { background: var(--brand-d); border-color: var(--brand-d); cursor: progress; }
+
+    /* ---- Formulario ---- */
+    fieldset { border: 0; padding: 0; margin: 0 0 20px; min-width: 0; }
+    legend { padding: 0; margin-bottom: 10px; font-weight: 700; }
+    label.txt { display: block; font-weight: 700; margin-bottom: 4px; }
+    .ayuda { display: block; font-size: .875rem; color: var(--muted); margin-bottom: 8px; }
+    .campo { margin-bottom: 20px; }
+    input[type="text"] { width: 100%; font: inherit; min-height: 56px; padding: .75rem 1rem; border: 2px solid var(--field); border-radius: 14px; background: #fff; color: var(--ink); }
+    input[aria-invalid="true"][type="text"] { border-color: var(--error); background: var(--error-bg); }
+    .error-campo { color: var(--error); font-size: .9375rem; font-weight: 600; margin: 8px 0 0; }
     .error-campo:empty { display: none; }
     .error-campo::before { content: "⚠ "; }
-    :focus-visible { outline: 3px solid #ffbf47; outline-offset: 2px; box-shadow: 0 0 0 5px var(--texto); }
-    button { font: inherit; font-weight: 700; min-height: 48px; padding: .75rem 1.25rem; border-radius: 8px; cursor: pointer; width: 100%; }
-    .primario { background: var(--azul); color: #fff; border: 2px solid var(--azul); }
-    .primario:hover { background: var(--azul-osc); }
-    .secundario { background: #fff; color: var(--azul); border: 2px solid var(--azul); margin-top: .75rem; }
-    .resumen-errores { border: 3px solid var(--error); border-radius: 8px; padding: 1rem; margin-bottom: 1.25rem; background: #fff5f6; }
-    .resumen-errores h2 { font-size: 1.125rem; margin: 0 0 .5rem; color: var(--error); }
+
+    .contacto { display: flex; align-items: center; gap: 12px; min-height: 68px; padding: 10px 14px; border: 2px solid var(--line); border-radius: 18px; background: #fff; cursor: pointer; margin-bottom: 10px; }
+    .contacto:has(input:checked) { border-color: var(--brand); background: var(--brand-tint); }
+    .contacto input { order: 3; flex: none; width: 24px; height: 24px; margin: 0; accent-color: var(--brand); }
+    .contacto input[aria-invalid="true"] { outline: 2px solid var(--error); outline-offset: 2px; }
+    .contacto:has(input[aria-invalid="true"]) { border-color: var(--error); }
+    .c-dat { flex: 1; display: flex; flex-direction: column; }
+    .c-n { font-weight: 600; } .c-c { font-size: .875rem; color: var(--muted); }
+
+    .monto-caja { background: var(--brand-tint); border-radius: 24px; padding: 18px 16px 16px; text-align: center; }
+    .monto-caja label.txt { color: var(--ink); }
+    .monto-fila { display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .monto-fila .peso { font-size: 2.5rem; font-weight: 800; color: var(--brand-d); }
+    .monto-fila input { width: 10ch; max-width: 100%; text-align: center; font-size: 2.25rem; font-weight: 800; min-height: 64px; color: var(--brand-d); }
+    .monto-caja .ayuda { margin: 8px 0 0; }
+
+    .resumen-errores { border: 3px solid var(--error); border-radius: 18px; padding: 16px; margin-bottom: 20px; background: var(--error-bg); }
+    .resumen-errores h2 { color: var(--error); margin: 0 0 8px; }
     .resumen-errores ul { margin: 0; padding-left: 1.25rem; }
     .resumen-errores a { color: var(--error); font-weight: 600; }
-    dl { margin: 0 0 1.25rem; }
-    dl div { display: flex; justify-content: space-between; gap: 1rem; padding: .75rem 0; border-bottom: 1px solid #d7dbe2; }
-    dt { color: var(--texto-2); } dd { margin: 0; font-weight: 700; text-align: right; }
+
+    /* ---- Confirmar / Listo ---- */
+    .ficha { background: var(--brand-tint); border-radius: 24px; padding: 20px; margin-bottom: 20px; }
+    .ficha-dest { display: flex; align-items: center; gap: 14px; }
+    .monto-grande { margin: 16px 0 4px; text-align: center; font-size: 2.5rem; font-weight: 800; color: var(--brand-d); letter-spacing: -.02em; }
+    dl { margin: 0; }
+    dl div { display: flex; justify-content: space-between; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+    dl div:last-child { border-bottom: 0; }
+    dt { color: var(--muted); } dd { margin: 0; font-weight: 600; text-align: right; }
     .exito { text-align: center; }
-    .exito .icono { width: 64px; height: 64px; margin: 0 auto .5rem; }
+    .check { width: 88px; height: 88px; margin: 0 auto 16px; display: block; }
+    .comprobante { border: 2px dashed var(--field); border-radius: 20px; padding: 4px 18px; margin-bottom: 20px; }
+    .comprobante dl div { padding: 10px 0; }
+
     [hidden] { display: none !important; }
     .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
-    footer { text-align: center; font-size: .875rem; color: var(--texto-2); padding: 1rem; }
-    footer a { color: var(--azul); }
-    @media (prefers-reduced-motion: no-preference) { button { transition: background .15s; } }
+    .pie { text-align: center; padding: 0 20px 20px; font-size: .875rem; }
+    .pie a { display: inline-block; padding: 12px; color: var(--brand-d); font-weight: 600; }
+
+    :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; box-shadow: 0 0 0 5px var(--ink); }
+    .contacto:has(input:focus-visible) { outline: 3px solid var(--focus); outline-offset: 2px; box-shadow: 0 0 0 5px var(--ink); }
+    .contacto input:focus-visible { outline: none; box-shadow: none; }
+
+    @media (prefers-reduced-motion: no-preference) {
+      .btn { transition: background .15s; }
+      main > section:not([hidden]) { animation: entra .25s ease-out; }
+      @keyframes entra { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+    }
   </style>
 </head>
 <body>
+<div class="stage">
+<div class="phone">
+<div class="screen" id="screen">
   <a class="skip" href="#contenido">Saltar al contenido principal</a>
 
-  <header>
-    <p class="marca">Banco Demo</p>
+  <header class="top">
+    <p class="marca">
+      <svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect width="32" height="32" rx="9" fill="#fff"/><path d="M9 13h13m0 0-4-4m4 4-4 4M23 19H10m0 0 4-4m-4 4 4 4" stroke="#3a2fe0" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Banco Demo
+    </p>
+    <span class="yo" aria-hidden="true">JG</span>
   </header>
 
   <main id="contenido">
-    <nav aria-label="Progreso de la transferencia">
-      <ol class="pasos">
-        <li id="p1" aria-current="step">1. Datos <span class="sr-only" id="p1-estado">(paso actual)</span></li>
-        <li id="p2">2. Confirmar <span class="sr-only" id="p2-estado"></span></li>
-        <li id="p3">3. Listo <span class="sr-only" id="p3-estado"></span></li>
-      </ol>
-    </nav>
+
+    <!-- INICIO -->
+    <section id="v0" aria-labelledby="t0">
+      <div class="hero">
+        <h1 id="t0" tabindex="-1">Hola, Jorge</h1>
+        <p class="sub-hero">Este es el resumen de tu cuenta.</p>
+        <div class="saldo-card">
+          <p class="lbl">Saldo total</p>
+          <p class="saldo-val"><span aria-hidden="true" id="saldo-vis"></span><span class="sr-only" id="saldo-voz"></span></p>
+          <p class="cuenta-sub">Cuenta corriente terminada en 4821</p>
+          <button type="button" class="btn btn-claro" id="btn-ir">
+            <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 17 17 7M9 7h8v8" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Transferir
+          </button>
+        </div>
+      </div>
+      <div class="sheet">
+        <h2>Últimos movimientos</h2>
+        <ul class="movs" id="movs"></ul>
+      </div>
+    </section>
 
     <!-- PASO 1 -->
-    <section id="paso1" aria-labelledby="t1">
-      <h1 id="t1" tabindex="-1">Transferir dinero</h1>
-      <div class="tarjeta">
-        <p class="saldo">Saldo disponible <strong>$1.250.000</strong></p>
-
+    <section id="v1" aria-labelledby="t1" hidden>
+      <div class="hero">
+        <div class="hero-fila">
+          <button type="button" class="atras" data-volver="0" aria-label="Volver al inicio"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <h1 id="t1" tabindex="-1">Transferir dinero</h1>
+        </div>
+        <nav aria-label="Progreso de la transferencia">
+          <ol class="pasos">
+            <li data-p="1">1. Datos <span class="sr-only est"></span></li>
+            <li data-p="2">2. Confirmar <span class="sr-only est"></span></li>
+            <li data-p="3">3. Listo <span class="sr-only est"></span></li>
+          </ol>
+        </nav>
+      </div>
+      <div class="sheet">
         <div id="resumen" class="resumen-errores" role="alert" tabindex="-1" hidden>
           <h2>Revisa los siguientes errores:</h2>
           <ul id="lista-errores"></ul>
         </div>
 
         <form id="form" novalidate>
-          <div class="campo">
-            <label for="destinatario">Destinatario <span aria-hidden="true">*</span><span class="sr-only">(obligatorio)</span></label>
-            <select id="destinatario" required aria-describedby="err-destinatario">
-              <option value="">Selecciona un contacto</option>
-              <option value="María González – Cuenta Corriente terminada en 4821">María González – Cta. Cte. ••4821</option>
-              <option value="Juan Pérez – Cuenta Vista terminada en 1934">Juan Pérez – Cta. Vista ••1934</option>
-              <option value="Ana Rojas – Cuenta RUT terminada en 7710">Ana Rojas – Cuenta RUT ••7710</option>
-            </select>
+          <fieldset aria-describedby="err-destinatario">
+            <legend>Destinatario <span aria-hidden="true">*</span><span class="sr-only">(obligatorio)</span></legend>
+            <label class="contacto">
+              <input type="radio" name="dest" value="mg" id="dest-mg" aria-describedby="err-destinatario">
+              <span class="av" style="--bg:#e3e1ff;--fg:#2a20b8" aria-hidden="true">MG</span>
+              <span class="c-dat"><span class="c-n">María González</span><span class="c-c">Cuenta corriente ••4821</span></span>
+            </label>
+            <label class="contacto">
+              <input type="radio" name="dest" value="jp" id="dest-jp" aria-describedby="err-destinatario">
+              <span class="av" style="--bg:#d3f6e8;--fg:#0a5c35" aria-hidden="true">JP</span>
+              <span class="c-dat"><span class="c-n">Juan Pérez</span><span class="c-c">Cuenta vista ••1934</span></span>
+            </label>
+            <label class="contacto">
+              <input type="radio" name="dest" value="ar" id="dest-ar" aria-describedby="err-destinatario">
+              <span class="av" style="--bg:#ffe4d3;--fg:#8f3500" aria-hidden="true">AR</span>
+              <span class="c-dat"><span class="c-n">Ana Rojas</span><span class="c-c">Cuenta RUT ••7710</span></span>
+            </label>
             <p class="error-campo" id="err-destinatario"></p>
-          </div>
+          </fieldset>
 
-          <div class="campo">
-            <label for="monto">Monto a transferir, en pesos <span aria-hidden="true">*</span><span class="sr-only">(obligatorio)</span></label>
-            <span class="ayuda" id="ayuda-monto">Solo números, sin puntos. Máximo $1.250.000.</span>
-            <input id="monto" type="text" inputmode="numeric" autocomplete="off" required aria-describedby="ayuda-monto err-monto">
+          <div class="campo monto-caja">
+            <label class="txt" for="monto">Monto a transferir, en pesos <span aria-hidden="true">*</span><span class="sr-only">(obligatorio)</span></label>
+            <div class="monto-fila">
+              <span class="peso" aria-hidden="true">$</span>
+              <input id="monto" type="text" inputmode="numeric" autocomplete="off" required aria-describedby="ayuda-monto err-monto">
+            </div>
+            <span class="ayuda" id="ayuda-monto"></span>
             <p class="error-campo" id="err-monto"></p>
           </div>
 
           <div class="campo">
-            <label for="mensaje">Mensaje para el destinatario (opcional)</label>
+            <label class="txt" for="mensaje">Mensaje para el destinatario (opcional)</label>
             <span class="ayuda" id="ayuda-msg">Máximo 40 caracteres.</span>
             <input id="mensaje" type="text" maxlength="40" aria-describedby="ayuda-msg">
           </div>
 
-          <button type="submit" class="primario">Continuar</button>
+          <button type="submit" class="btn btn-primario">Continuar</button>
         </form>
       </div>
     </section>
 
     <!-- PASO 2 -->
-    <section id="paso2" aria-labelledby="t2" hidden>
-      <h1 id="t2" tabindex="-1">Confirma tu transferencia</h1>
-      <div class="tarjeta">
+    <section id="v2" aria-labelledby="t2" hidden>
+      <div class="hero">
+        <div class="hero-fila">
+          <button type="button" class="atras" data-volver="1" aria-label="Volver y editar datos"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <h1 id="t2" tabindex="-1">Confirma tu transferencia</h1>
+        </div>
+        <nav aria-label="Progreso de la transferencia">
+          <ol class="pasos">
+            <li data-p="1">1. Datos <span class="sr-only est"></span></li>
+            <li data-p="2">2. Confirmar <span class="sr-only est"></span></li>
+            <li data-p="3">3. Listo <span class="sr-only est"></span></li>
+          </ol>
+        </nav>
+      </div>
+      <div class="sheet">
+        <div class="ficha">
+          <div class="ficha-dest">
+            <span class="av grande" id="c-av" aria-hidden="true"></span>
+            <div><strong id="c-nombre"></strong><br><span id="c-cuenta" style="color:var(--muted);font-size:.875rem"></span></div>
+          </div>
+          <p class="monto-grande" id="c-monto-grande"></p>
+        </div>
         <dl>
           <div><dt>Destinatario</dt><dd id="c-dest"></dd></div>
           <div><dt>Monto</dt><dd id="c-monto"></dd></div>
+          <div><dt>Desde</dt><dd>Cuenta corriente ••4821</dd></div>
+          <div><dt>Comisión</dt><dd><span aria-hidden="true">$0</span><span class="sr-only">0 pesos</span></dd></div>
           <div><dt>Mensaje</dt><dd id="c-msg"></dd></div>
         </dl>
-        <button type="button" class="primario" id="btn-confirmar">Confirmar y transferir</button>
-        <button type="button" class="secundario" id="btn-volver">Volver y editar datos</button>
+        <div style="margin-top:20px">
+          <button type="button" class="btn btn-primario" id="btn-confirmar">Confirmar y transferir</button>
+          <button type="button" class="btn btn-sec" id="btn-volver">Volver y editar datos</button>
+        </div>
       </div>
     </section>
 
     <!-- PASO 3 -->
-    <section id="paso3" aria-labelledby="t3" hidden>
-      <div class="tarjeta exito">
-        <svg class="icono" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><circle cx="32" cy="32" r="30" fill="#0f6b2f"/><path d="M19 33l9 9 18-19" stroke="#fff" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <section id="v3" aria-labelledby="t3" hidden>
+      <div class="hero exito">
+        <svg class="check" viewBox="0 0 88 88" aria-hidden="true" focusable="false"><circle cx="44" cy="44" r="42" fill="#ffffff"/><path d="M26 45l12 12 24-26" stroke="#3a2fe0" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <h1 id="t3" tabindex="-1">Transferencia realizada con éxito</h1>
-        <p id="texto-exito"></p>
-        <p>Número de comprobante: <strong id="comprobante"></strong></p>
-        <button type="button" class="primario" id="btn-nueva">Hacer otra transferencia</button>
+        <nav aria-label="Progreso de la transferencia">
+          <ol class="pasos">
+            <li data-p="1">1. Datos <span class="sr-only est"></span></li>
+            <li data-p="2">2. Confirmar <span class="sr-only est"></span></li>
+            <li data-p="3">3. Listo <span class="sr-only est"></span></li>
+          </ol>
+        </nav>
+      </div>
+      <div class="sheet">
+        <p id="texto-exito" style="margin-top:0"></p>
+        <h2>Comprobante</h2>
+        <div class="comprobante">
+          <dl>
+            <div><dt>Monto</dt><dd id="r-monto"></dd></div>
+            <div><dt>Destinatario</dt><dd id="r-dest"></dd></div>
+            <div><dt>Fecha</dt><dd id="r-fecha"></dd></div>
+            <div><dt>N.º de comprobante</dt><dd id="comprobante"></dd></div>
+          </dl>
+        </div>
+        <button type="button" class="btn btn-primario" id="btn-inicio">Volver al inicio</button>
+        <button type="button" class="btn btn-sec" id="btn-nueva">Hacer otra transferencia</button>
       </div>
     </section>
 
-    <!-- Región para anuncios de cambios de estado -->
     <div class="sr-only" role="status" aria-live="polite" id="anuncio"></div>
   </main>
 
-  <footer><a href="/">Volver al inicio de la prueba</a></footer>
+  <footer class="pie"><a href="/">Volver a la portada de la prueba</a></footer>
+</div>
+</div>
+</div>
 
-  <script>
-    const $ = (id) => document.getElementById(id);
-    const SALDO = 1250000;
-    const clp = (n) => "$" + n.toLocaleString("es-CL");
-    const clpVoz = (n) => n.toLocaleString("es-CL") + " pesos";
-    const titulos = ["Transferir dinero – Paso 1 de 3", "Confirmar transferencia – Paso 2 de 3", "Transferencia realizada – Paso 3 de 3"];
+<script>
+  const $ = (id) => document.getElementById(id);
+  const fmt = (n) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  const money = (n) => "$" + fmt(n);
+  const voz = (n) => fmt(n) + " pesos";
+  const AV = [["#e3e1ff", "#2a20b8"], ["#d3f6e8", "#0a5c35"], ["#ffe4d3", "#8f3500"], ["#ffe9b8", "#6b4a00"], ["#e8e9f5", "#3a3c5e"]];
+  const CONT = {
+    mg: { n: "María González", c: "Cuenta corriente ••4821", i: "MG", k: 0 },
+    jp: { n: "Juan Pérez", c: "Cuenta vista ••1934", i: "JP", k: 1 },
+    ar: { n: "Ana Rojas", c: "Cuenta RUT ••7710", i: "AR", k: 2 }
+  };
+  const TITULOS = ["Inicio", "Transferir dinero – Paso 1 de 3", "Confirmar transferencia – Paso 2 de 3", "Transferencia realizada – Paso 3 de 3"];
+  let saldo = 1250000;
+  let estado = {};
+  const MOVS = [
+    { n: "Sueldo Empresa Andes", f: "Hoy, 09:12", m: 850000, i: "EA", k: 0 },
+    { n: "Supermercado Central", f: "Ayer, 19:40", m: -38450, i: "SC", k: 3 },
+    { n: "Juan Pérez", f: "17 nov", m: -25000, i: "JP", k: 1 },
+    { n: "Streaming Plus", f: "15 nov", m: -9990, i: "SP", k: 4 }
+  ];
 
-    function irAPaso(n) {
-      [1, 2, 3].forEach((i) => {
-        $("paso" + i).hidden = i !== n;
-        const li = $("p" + i);
-        li.classList.toggle("hecho", i < n);
-        if (i === n) li.setAttribute("aria-current", "step"); else li.removeAttribute("aria-current");
-        $("p" + i + "-estado").textContent = i === n ? "(paso actual)" : i < n ? "(completado)" : "";
-      });
-      document.title = titulos[n - 1] + " – Banco Demo (versión accesible)";
-      $("t" + n).focus();
-      window.scrollTo(0, 0);
+  function pintarInicio() {
+    $("saldo-vis").textContent = money(saldo);
+    $("saldo-voz").textContent = voz(saldo);
+    $("ayuda-monto").textContent = "Solo números, sin puntos. Máximo " + money(saldo) + ".";
+    $("movs").innerHTML = MOVS.map((x) => {
+      const pos = x.m > 0, a = Math.abs(x.m);
+      return `<li><span class="av" style="--bg:${AV[x.k][0]};--fg:${AV[x.k][1]}" aria-hidden="true">${x.i}</span>` +
+        `<span class="mov-dat"><span class="mov-n">${x.n}</span><span class="mov-f">${x.f}</span></span>` +
+        `<span class="monto-mov ${pos ? "pos" : "neg"}"><span aria-hidden="true">${pos ? "+" : "−"}${money(a)}</span><span class="sr-only">${pos ? "más" : "menos"} ${voz(a)}</span></span></li>`;
+    }).join("");
+  }
+
+  function irA(n, mover = true) {
+    for (let i = 0; i <= 3; i++) $("v" + i).hidden = i !== n;
+    document.querySelectorAll(".pasos li").forEach((li) => {
+      const p = Number(li.dataset.p);
+      li.classList.toggle("hecho", p < n);
+      if (p === n) li.setAttribute("aria-current", "step"); else li.removeAttribute("aria-current");
+      li.querySelector(".est").textContent = p === n ? "(paso actual)" : p < n ? "(completado)" : "";
+    });
+    document.title = TITULOS[n] + " – Banco Demo (versión accesible)";
+    $("screen").scrollTop = 0; window.scrollTo(0, 0);
+    if (mover) $("t" + n).focus({ preventScroll: true });
+  }
+
+  const radios = () => document.querySelectorAll('input[name="dest"]');
+  function setErrorDest(msg) {
+    $("err-destinatario").textContent = msg;
+    radios().forEach((r) => msg ? r.setAttribute("aria-invalid", "true") : r.removeAttribute("aria-invalid"));
+  }
+  function setErrorMonto(msg) {
+    const el = $("monto");
+    $("err-monto").textContent = msg;
+    if (msg) el.setAttribute("aria-invalid", "true"); else el.removeAttribute("aria-invalid");
+  }
+
+  $("form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const errores = [];
+    const sel = document.querySelector('input[name="dest"]:checked');
+    const montoTxt = $("monto").value.trim();
+    const monto = Number(montoTxt);
+
+    if (!sel) { const m = "Selecciona a quién quieres transferir."; setErrorDest(m); errores.push(["dest-mg", m]); }
+    else setErrorDest("");
+
+    let msgMonto = "";
+    if (!montoTxt) msgMonto = "Ingresa el monto a transferir.";
+    else if (!/^\d+$/.test(montoTxt)) msgMonto = "El monto solo puede tener números, sin puntos ni símbolos.";
+    else if (monto <= 0) msgMonto = "El monto debe ser mayor a cero.";
+    else if (monto > saldo) msgMonto = "El monto supera tu saldo disponible de " + money(saldo) + ".";
+    setErrorMonto(msgMonto);
+    if (msgMonto) errores.push(["monto", msgMonto]);
+
+    if (errores.length) {
+      $("lista-errores").innerHTML = errores.map(([id, m]) => `<li><a href="#${id}">${m}</a></li>`).join("");
+      $("resumen").querySelector("h2").textContent = errores.length === 1 ? "Hay 1 error en el formulario:" : `Hay ${errores.length} errores en el formulario:`;
+      $("resumen").hidden = false;
+      $("resumen").focus();
+      return;
     }
+    $("resumen").hidden = true;
+    const c = CONT[sel.value];
+    estado = { c, monto, msg: $("mensaje").value.trim() };
+    const av = $("c-av"); av.textContent = c.i; av.style.setProperty("--bg", AV[c.k][0]); av.style.setProperty("--fg", AV[c.k][1]);
+    $("c-nombre").textContent = c.n; $("c-cuenta").textContent = c.c;
+    $("c-monto-grande").innerHTML = `<span aria-hidden="true">${money(monto)}</span><span class="sr-only">${voz(monto)}</span>`;
+    $("c-dest").textContent = c.n + ", " + c.c.toLowerCase();
+    $("c-monto").innerHTML = `<span aria-hidden="true">${money(monto)}</span><span class="sr-only">${voz(monto)}</span>`;
+    $("c-msg").textContent = estado.msg || "Sin mensaje";
+    irA(2);
+  });
 
-    function setError(campo, msg) {
-      const el = $(campo);
-      $("err-" + campo).textContent = msg;
-      if (msg) el.setAttribute("aria-invalid", "true"); else el.removeAttribute("aria-invalid");
-    }
+  $("lista-errores").addEventListener("click", (e) => {
+    const a = e.target.closest("a"); if (!a) return;
+    e.preventDefault(); $(a.getAttribute("href").slice(1)).focus();
+  });
+  radios().forEach((r) => r.addEventListener("change", () => setErrorDest("")));
+  $("monto").addEventListener("input", () => { if ($("err-monto").textContent) setErrorMonto(""); });
 
-    $("form").addEventListener("submit", (e) => {
-      e.preventDefault();
-      const errores = [];
-      const dest = $("destinatario").value;
-      const montoTxt = $("monto").value.trim();
-      const monto = Number(montoTxt);
+  $("btn-ir").addEventListener("click", () => irA(1));
+  document.querySelectorAll("[data-volver]").forEach((b) => b.addEventListener("click", () => irA(Number(b.dataset.volver))));
+  $("btn-volver").addEventListener("click", () => irA(1));
 
-      if (!dest) { setError("destinatario", "Selecciona a quién quieres transferir."); errores.push(["destinatario", "Selecciona a quién quieres transferir."]); }
-      else setError("destinatario", "");
+  $("btn-confirmar").addEventListener("click", () => {
+    const btn = $("btn-confirmar");
+    if (btn.getAttribute("aria-disabled") === "true") return;
+    btn.setAttribute("aria-disabled", "true"); btn.textContent = "Procesando…";
+    $("anuncio").textContent = "Procesando la transferencia, espera un momento.";
+    setTimeout(() => {
+      const { c, monto } = estado;
+      const comp = String(Math.floor(10000000 + Math.random() * 89999999));
+      const fecha = new Date().toLocaleDateString("es-CL", { day: "numeric", month: "long", year: "numeric" });
+      saldo -= monto;
+      MOVS.unshift({ n: c.n, f: "Hoy", m: -monto, i: c.i, k: c.k });
+      pintarInicio();
+      $("texto-exito").textContent = `Transferiste ${voz(monto)} a ${c.n}.`;
+      $("r-monto").innerHTML = `<span aria-hidden="true">${money(monto)}</span><span class="sr-only">${voz(monto)}</span>`;
+      $("r-dest").textContent = c.n;
+      $("r-fecha").textContent = fecha;
+      $("comprobante").textContent = comp;
+      btn.removeAttribute("aria-disabled"); btn.textContent = "Confirmar y transferir";
+      $("anuncio").textContent = "";
+      irA(3);
+    }, 1200);
+  });
 
-      let msgMonto = "";
-      if (!montoTxt) msgMonto = "Ingresa el monto a transferir.";
-      else if (!/^\d+$/.test(montoTxt)) msgMonto = "El monto solo puede tener números, sin puntos ni símbolos.";
-      else if (monto <= 0) msgMonto = "El monto debe ser mayor a cero.";
-      else if (monto > SALDO) msgMonto = "El monto supera tu saldo disponible de $1.250.000.";
-      setError("monto", msgMonto);
-      if (msgMonto) errores.push(["monto", msgMonto]);
+  $("btn-nueva").addEventListener("click", () => { $("form").reset(); setErrorDest(""); setErrorMonto(""); irA(1); });
+  $("btn-inicio").addEventListener("click", () => { $("form").reset(); irA(0); });
 
-      if (errores.length) {
-        $("lista-errores").innerHTML = errores.map(([id, m]) => `<li><a href="#${id}">${m}</a></li>`).join("");
-        $("resumen").querySelector("h2").textContent = errores.length === 1 ? "Hay 1 error en el formulario:" : `Hay ${errores.length} errores en el formulario:`;
-        $("resumen").hidden = false;
-        $("resumen").focus();
-        return;
-      }
-      $("resumen").hidden = true;
-      $("c-dest").textContent = dest;
-      $("c-monto").innerHTML = `<span aria-hidden="true">${clp(monto)}</span><span class="sr-only">${clpVoz(monto)}</span>`;
-      $("c-msg").textContent = $("mensaje").value.trim() || "Sin mensaje";
-      irAPaso(2);
-    });
-
-    $("lista-errores").addEventListener("click", (e) => {
-      const a = e.target.closest("a"); if (!a) return;
-      e.preventDefault(); $(a.getAttribute("href").slice(1)).focus();
-    });
-
-    $("btn-volver").addEventListener("click", () => irAPaso(1));
-
-    $("btn-confirmar").addEventListener("click", () => {
-      const btn = $("btn-confirmar");
-      btn.disabled = true; btn.textContent = "Procesando…";
-      $("anuncio").textContent = "Procesando la transferencia, espera un momento.";
-      setTimeout(() => {
-        const monto = Number($("monto").value);
-        $("texto-exito").textContent = `Transferiste ${clpVoz(monto)} a ${$("destinatario").value}.`;
-        $("comprobante").textContent = String(Math.floor(10000000 + Math.random() * 89999999));
-        btn.disabled = false; btn.textContent = "Confirmar y transferir";
-        $("anuncio").textContent = "";
-        irAPaso(3);
-      }, 1200);
-    });
-
-    $("btn-nueva").addEventListener("click", () => { $("form").reset(); irAPaso(1); });
-  </script>
+  pintarInicio();
+  irA(0, false);
+</script>
 </body>
 </html>
