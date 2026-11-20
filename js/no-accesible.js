@@ -22,7 +22,8 @@ function srcAvatar(iniciales, color) {
   var texto = COLORES_AVATAR[color][1].slice(1);
   var svg = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 44'><circle cx='22' cy='22' r='22' fill='#" + fondo + "'/>" +
     "<text x='22' y='27' font-family='Arial' font-weight='700' font-size='14' text-anchor='middle' fill='#" + texto + "'>" + iniciales + "</text></svg>";
-  return "data:image/svg+xml," + encodeURIComponent(svg);
+  // encodeURIComponent no codifica la comilla simple y rompía el atributo src='…' de la lista de movimientos
+  return "data:image/svg+xml," + encodeURIComponent(svg).replace(/'/g, "%27");
 }
 
 function pintarAvataresDelFormulario() {
