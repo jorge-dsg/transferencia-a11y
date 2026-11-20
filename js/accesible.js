@@ -7,7 +7,8 @@
      4. Cambiar de pantalla (título, foco, pasos)
      5. Validación del formulario
      6. Confirmar y procesar
-     7. Eventos e inicio
+     7. Teclado en pantalla (VoiceOver: mantener el foco en el campo)
+     8. Eventos e inicio
    ========================================================================== */
 
 /* 1. ATAJOS Y ESTADO ------------------------------------------------------ */
@@ -271,7 +272,62 @@ function reiniciarFormulario() {
 }
 
 
-/* 7. EVENTOS E INICIO ----------------------------------------------------- */
+/* 7. TECLADO EN PANTALLA (VoiceOver en iPhone) ------------------------------
+ * Al cerrar el teclado el campo pierde el foco y VoiceOver salta al primer
+ * elemento de la página (el botón de arriba). Para que se quede en el campo:
+ *  1. Detectamos que el teclado se cerró: el campo hizo "blur" y, casi a la
+ *     vez, el viewport visual volvió a crecer.
+ *  2. Devolvemos el foco al campo en modo solo lectura (readOnly): así el foco
+ *     vuelve a él SIN reabrir el teclado.
+ *  3. Con un toque (doble toque de VoiceOver) pasa a editable y abre el teclado.
+ * En escritorio no hace nada: el viewport visual no cambia al hacer blur.    */
+const CAMPOS_CON_TECLADO = [$("monto"), $("mensaje")];
+let campoSinTeclado = null;   // último campo que perdió el foco
+let blurEn = 0;               // cuándo
+let crecioEn = 0;             // cuándo volvió a crecer el viewport (teclado cerrado)
+let reabriendo = false;       // true mientras nosotros mismos reabrimos el teclado
+
+function restaurarFocoEnCampo() {
+  const reciente = (t) => Date.now() - t < 1500;
+  if (!campoSinTeclado || !reciente(blurEn) || !reciente(crecioEn)) return;
+  if (document.activeElement !== document.body) return;   // el usuario ya movió el foco a otro control
+  const campo = campoSinTeclado;
+  campoSinTeclado = null;
+  campo.readOnly = true;
+  campo.focus({ preventScroll: true });
+}
+
+CAMPOS_CON_TECLADO.forEach((campo) => {
+  campo.addEventListener("blur", () => {
+    campo.readOnly = false;              // fuera del campo vuelve a ser editable
+    if (reabriendo) return;
+    campoSinTeclado = campo;
+    blurEn = Date.now();
+    setTimeout(restaurarFocoEnCampo, 0);
+  });
+  campo.addEventListener("click", () => {
+    if (!campo.readOnly) return;         // ya es editable: el teclado se abre solo
+    reabriendo = true;
+    campo.readOnly = false;
+    campo.blur();
+    campo.focus();                       // dentro del gesto del usuario: abre el teclado
+    reabriendo = false;
+  });
+});
+
+if (window.visualViewport) {
+  let alto = window.visualViewport.height;
+  window.visualViewport.addEventListener("resize", () => {
+    const creció = window.visualViewport.height > alto + 50;   // +50 evita falsos positivos por zoom
+    alto = window.visualViewport.height;
+    if (!creció) return;
+    crecioEn = Date.now();
+    setTimeout(restaurarFocoEnCampo, 0);
+  });
+}
+
+
+/* 8. EVENTOS E INICIO ----------------------------------------------------- */
 $("form").addEventListener("submit", alEnviarFormulario);
 
 /* Los enlaces del resumen de errores llevan el foco al campo */
