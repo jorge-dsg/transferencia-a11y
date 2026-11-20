@@ -132,29 +132,30 @@ function irA(pantalla, moverFoco = true) {
 }
 
 
-/* FORMATO DEL CAMPO MONTO ------------------------------------------------- *
- * Mientras se escribe, el campo muestra el número con puntos: 1800 -> "1.800".
- * El "$" es un adorno visual fuera del valor (si estuviera en el valor, el
- * lector diría "símbolo de dólar"). Debajo se muestra el monto en palabras,
- * que también lee el lector: "Mil ochocientos pesos".                       */
+/* CAMPO MONTO --------------------------------------------------------------
+ * El valor del campo lleva SOLO dígitos ("200000"). Si llevara puntos
+ * ("200.000"), el lector lo leería como decimal ("doscientos punto cero…").
+ * El monto con formato y en palabras se muestra debajo:
+ *   a la vista:  "$200.000 · Doscientos mil pesos"
+ *   al lector:   "Doscientos mil pesos"  (como descripción del campo)       */
 const soloDigitos = (texto) => texto.replace(/\D/g, "").replace(/^0+(?=\d)/, "");
 
 function actualizarMonto() {
   const campo = $("monto");
   const digitosAntesDelCursor = soloDigitos(campo.value.slice(0, campo.selectionStart)).length;
   const digitos = soloDigitos(campo.value);
-  campo.value = digitos ? formatearNumero(Number(digitos)) : "";
-  $("monto-letras").textContent = digitos && Number(digitos) > 0
-    ? montoHablado(Number(digitos)).replace(/^./, (c) => c.toUpperCase())
-    : "";
 
-  // Deja el cursor después del mismo dígito en que estaba
-  let cuenta = 0, posicion = campo.value.length;
-  if (digitosAntesDelCursor === 0) posicion = 0;
-  else for (let i = 0; i < campo.value.length; i++) {
-    if (/\d/.test(campo.value[i]) && ++cuenta === digitosAntesDelCursor) { posicion = i + 1; break; }
+  // Solo se reescribe el valor si cambió (p. ej. se escribió una letra):
+  // reasignarlo igual hace que el lector vuelva a leer el campo.
+  if (campo.value !== digitos) {
+    campo.value = digitos;
+    campo.setSelectionRange(digitosAntesDelCursor, digitosAntesDelCursor);
   }
-  campo.setSelectionRange(posicion, posicion);
+
+  const n = Number(digitos);
+  const hablado = n > 0 ? montoHablado(n).replace(/^./, (c) => c.toUpperCase()) : "";
+  $("monto-voz").textContent = hablado;
+  $("monto-letras").textContent = n > 0 ? formatearMonto(n) + " · " + hablado : "";
 }
 
 

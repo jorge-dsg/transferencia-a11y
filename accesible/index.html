@@ -121,9 +121,10 @@
             <span hidden id="ayuda-monto-voz"></span>   <!-- misma ayuda con el monto en palabras; la llena accesible.js -->
             <div class="input-peso">
               <span class="signo-peso" aria-hidden="true">$</span>   <!-- decorativo: el lector no dice "dólar" -->
-              <input class="input" id="monto" type="text" inputmode="numeric" autocomplete="off" maxlength="11" placeholder="0" aria-labelledby="et-monto" aria-describedby="ayuda-monto-voz monto-letras err-monto">
+              <input class="input" id="monto" type="text" inputmode="numeric" autocomplete="off" maxlength="11" placeholder="0" aria-labelledby="et-monto" aria-describedby="ayuda-monto-voz monto-voz err-monto">
             </div>
-            <span class="ayuda" id="monto-letras" aria-hidden="true"></span>   <!-- monto en palabras, lo llena accesible.js -->
+            <span class="ayuda" id="monto-letras" aria-hidden="true"></span>   <!-- visible: "$200.000 · doscientos mil pesos" (lo llena accesible.js) -->
+            <span hidden id="monto-voz"></span>                              <!-- lo que lee el lector: "Doscientos mil pesos" -->
             <p class="error-campo" id="err-monto"></p>
           </div>
 
