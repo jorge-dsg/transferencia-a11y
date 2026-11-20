@@ -51,6 +51,13 @@
 }
 
 
+/* 6. BARRERA: aviso inicial con contraste insuficiente (viola WCAG 1.4.3) ---- */
+.aviso-prueba { padding: 10px 20px; background: #f4f5fb; color: #a9abc6; font-size: .75rem; line-height: 1.4; }
+.aviso-prueba .aviso-titulo { font-size: .875rem; font-weight: 700; }
+@media (min-width: 600px) { .aviso-prueba { padding-top: 34px; } }   /* deja espacio a la muesca */
+@media (min-width: 600px) { .phone .top { padding-top: 16px; } }
+
+
 /* Ajustes menores para que se vea igual que la versión accesible */
 img.av { display: block; }
 .btn   { user-select: none; }
