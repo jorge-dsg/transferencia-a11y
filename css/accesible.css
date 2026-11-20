@@ -49,7 +49,7 @@ fieldset { min-width: 0; margin: 0 0 20px; padding: 0; border: 0; }
 legend   { margin-bottom: 10px; padding: 0; font-weight: 700; }
 
 /* Campo de monto: el "$" es decorativo (aria-hidden) y va dentro del recuadro, a la izquierda */
-.input-peso { position: relative; }
+.input-peso { position: relative; margin-bottom: .75rem; }   /* deja aire para el borde de foco y el monto en letras */
 .input-peso .signo-peso { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
 .input-peso .input { padding-left: 2rem; }
 
