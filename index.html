@@ -4,26 +4,42 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Prueba de accesibilidad – Flujo de transferencia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; line-height: 1.5; color: #1a1a1a; background: #f4f6fa; }
-    main { max-width: 36rem; margin: 0 auto; padding: 2rem 1rem; }
-    h1 { font-size: 1.75rem; }
-    ul { list-style: none; padding: 0; }
+    :root { --brand: #3a2fe0; --brand-d: #2a20b8; --brand-tint: #eeeeff; --ink: #14142b; --muted: #55577a; --on-brand-soft: #d8d6ff; --focus: #ffc83d; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; line-height: 1.5; color: var(--ink); background: var(--brand); min-height: 100vh; }
+    main { max-width: 36rem; margin: 0 auto; padding: 0 0 2rem; }
+    .hero { color: #fff; padding: 3rem 1.5rem 4.5rem; }
+    .hero p { color: var(--on-brand-soft); margin: .75rem 0 0; }
+    h1 { font-size: 1.875rem; line-height: 1.2; margin: 0; letter-spacing: -.01em; }
+    .sheet { background: #fff; border-radius: 28px 28px 0 0; margin-top: -2rem; padding: 1.5rem 1.25rem 2rem; min-height: 50vh; }
+    ul { list-style: none; padding: 0; margin: 0; }
     li { margin-bottom: 1rem; }
-    a { display: block; background: #fff; border: 2px solid #0b4fa8; border-radius: 12px; padding: 1rem 1.25rem; color: #0b4fa8; font-weight: 700; text-decoration: none; font-size: 1.125rem; }
-    a:hover { background: #e8f0fc; }
-    a:focus-visible { outline: 3px solid #ffbf47; outline-offset: 2px; }
-    a span { display: block; font-weight: 400; color: #4a4a4a; font-size: .9375rem; }
+    a { display: flex; align-items: center; gap: 1rem; background: var(--brand-tint); border: 2px solid transparent; border-radius: 20px; padding: 1.125rem 1.25rem; color: var(--ink); font-weight: 700; text-decoration: none; font-size: 1.125rem; min-height: 72px; }
+    a:hover { border-color: var(--brand); }
+    a:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; box-shadow: 0 0 0 5px var(--ink); }
+    a span.t { display: block; font-weight: 400; color: var(--muted); font-size: .9375rem; }
+    .ic { flex: none; width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; color: #fff; background: var(--brand); }
+    .ic.no { background: var(--ink); }
+    .nota { color: var(--muted); font-size: .9375rem; }
   </style>
 </head>
 <body>
   <main>
-    <h1>Prueba de lector de pantalla: flujo de transferencia</h1>
-    <p>Dos versiones del mismo flujo bancario simulado. Ningún dato es real.</p>
-    <ul>
-      <li><a href="/accesible/">Versión A: accesible <span>Cumple pautas WCAG 2.2 AA</span></a></li>
-      <li><a href="/no-accesible/">Versión B: no accesible <span>Contiene barreras intencionales</span></a></li>
-    </ul>
+    <div class="hero">
+      <h1>Prueba de lector de pantalla: flujo de transferencia</h1>
+      <p>Dos versiones del mismo flujo bancario simulado: Inicio → Datos → Confirmar → Listo. Ningún dato es real.</p>
+    </div>
+    <div class="sheet">
+      <ul>
+        <li><a href="/accesible/"><span class="ic" aria-hidden="true">A</span><span>Versión A: accesible <span class="t">Cumple pautas WCAG 2.2 AA</span></span></a></li>
+        <li><a href="/no-accesible/"><span class="ic no" aria-hidden="true">B</span><span>Versión B: no accesible <span class="t">Contiene barreras intencionales</span></span></a></li>
+      </ul>
+      <p class="nota">Las dos versiones se ven casi idénticas; la diferencia está en el código.</p>
+    </div>
   </main>
 </body>
 </html>

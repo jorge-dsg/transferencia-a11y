@@ -4,121 +4,305 @@
   <meta charset="UTF-8">
   <!-- Barrera: bloquea el zoom -->
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <!-- Barrera: título genérico, sin lang -->
   <title>app</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
+    /* Barrera: outline eliminado en todo */
     * { box-sizing: border-box; outline: none !important; }
-    body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; font-size: 13px; color: #9a9a9a; background: #f4f6fa; }
-    .header { background: #0b4fa8; color: #6f8fc0; padding: 1rem; font-weight: 700; font-size: 1.1rem; }
-    .main { max-width: 32rem; margin: 0 auto; padding: 1.25rem 1rem 3rem; }
-    .titulo { font-size: 1.5rem; margin: .5rem 0 1rem; color: #333; font-weight: 700; }
-    .pasos { display: flex; gap: .5rem; margin: 0 0 1.5rem; }
-    .pasos div { flex: 1; height: 4px; background: #e3e6eb; }
-    .pasos div.on { background: #0b4fa8; }
-    .tarjeta { background: #fff; border-radius: 12px; padding: 1.25rem; box-shadow: 0 1px 3px rgba(0,0,0,.12); }
-    .saldo { margin: 0 0 1.25rem; padding: .75rem 1rem; background: #e8f0fc; border-radius: 8px; color: #a3b3cc; }
-    .saldo b { font-size: 1.25rem; display: block; color: #8fa3c4; }
-    .input { width: 100%; font: inherit; padding: .5rem; border: 1px solid #e6e6e6; border-radius: 8px; margin-bottom: 1rem; color: #aaa; }
-    .input::placeholder { color: #d0d0d0; }
-    .select { border: 1px solid #e6e6e6; border-radius: 8px; padding: .5rem; margin-bottom: 1rem; cursor: pointer; color: #bbb; position: relative; }
-    .opciones { display: none; border: 1px solid #e6e6e6; border-radius: 8px; margin-top: -0.75rem; margin-bottom: 1rem; }
-    .opciones div { padding: .4rem .5rem; cursor: pointer; font-size: 12px; }
-    .opciones div:hover { background: #f0f4fb; }
-    .rojo { border-color: #ffb3b3 !important; }
-    .btn { background: #6d9be0; color: #e8eefa; text-align: center; padding: .5rem; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 12px; }
-    .link { color: #b0c4e6; font-size: 11px; text-align: center; margin-top: .5rem; cursor: pointer; }
-    .fila { display: flex; justify-content: space-between; padding: .6rem 0; border-bottom: 1px solid #f0f0f0; }
-    .fila span:last-child { color: #777; font-weight: 700; }
-    .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #4caf50; color: #c8f0ca; padding: .5rem 1rem; border-radius: 20px; font-size: 12px; display: none; }
-    .ok { text-align: center; }
-    .ok img { width: 64px; height: 64px; }
-    .x { position: absolute; right: 8px; top: 6px; font-size: 10px; }
-    .foot { text-align: center; font-size: 11px; padding: 1rem; color: #ccc; cursor: pointer; }
+    :root {
+      --brand: #3a2fe0; --brand-d: #2a20b8; --brand-tint: #eeeeff;
+      --ink: #2b2b45; --muted: #9496b4; --line: #e4e5f4; --field: #dcdcea;
+      --error: #f08a84; --error-bg: #fff6f5; --ok: #5fa883;
+      --on-brand-soft: #a19df2;
+      --btn: #7d75f2;
+    }
+    html { -webkit-text-size-adjust: 100%; }
+    body { margin: 0; font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; font-size: 1rem; line-height: 1.5; color: var(--ink); background: #fff; }
+
+    .stage { min-height: 100vh; min-height: 100dvh; }
+    .phone { position: relative; min-height: 100vh; min-height: 100dvh; background: #fff; }
+    .screen { display: flex; flex-direction: column; min-height: inherit; }
+    @media (min-width: 600px) {
+      body { background: radial-gradient(circle at 20% 10%, #dcdbff, #f1f1fb 60%); }
+      .stage { display: grid; place-items: center; padding: 24px; }
+      .phone { width: 390px; height: min(844px, calc(100vh - 48px)); min-height: 0; border: 10px solid #14142b; border-radius: 48px; overflow: hidden; box-shadow: 0 30px 80px rgba(20,20,43,.35); }
+      .phone::before { content: ""; position: absolute; z-index: 20; top: 0; left: 50%; transform: translateX(-50%); width: 112px; height: 26px; background: #14142b; border-radius: 0 0 18px 18px; }
+      .screen { height: 100%; min-height: 0; overflow-y: auto; }
+      .top { padding-top: 38px !important; }
+    }
+
+    .top { background: var(--brand); color: #fff; display: flex; align-items: center; justify-content: space-between; padding: 16px 20px 4px; }
+    .marca { display: flex; align-items: center; gap: 10px; margin: 0; font-weight: 700; font-size: 1.0625rem; }
+    .yo { width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,.18); display: grid; place-items: center; font-weight: 700; font-size: .875rem; }
+
+    .main { flex: 1; display: flex; flex-direction: column; }
+    .vista { flex: 1; display: flex; flex-direction: column; }
+    .hero { background: var(--brand); color: #fff; padding: 12px 20px 48px; }
+    .hero-fila { display: flex; align-items: center; gap: 12px; }
+    .titulo { font-size: 1.625rem; line-height: 1.2; margin: 0; font-weight: 700; letter-spacing: -.01em; }
+    .atras { flex: none; width: 48px; height: 48px; border-radius: 50%; border: 2px solid rgba(255,255,255,.6); background: rgba(255,255,255,.14); color: #fff; display: grid; place-items: center; cursor: pointer; }
+    .sub-hero { margin: 4px 0 0; color: var(--on-brand-soft); font-size: .9375rem; }
+
+    .pasos { display: flex; gap: 8px; margin: 18px 0 0; }
+    .pasos div { flex: 1; font-size: .8125rem; padding-top: 8px; border-top: 4px solid rgba(255,255,255,.4); color: var(--on-brand-soft); }
+    .pasos div.on { border-top-color: #fff; color: #fff; font-weight: 700; }
+    .pasos div.hecho { border-top-color: rgba(255,255,255,.85); color: #fff; }
+
+    .sheet { flex: 1; background: #fff; border-radius: 28px 28px 0 0; margin-top: -28px; padding: 24px 20px 28px; position: relative; }
+    .h2 { font-size: 1.125rem; margin: 0 0 8px; font-weight: 700; }
+
+    .saldo-card { background: rgba(255,255,255,.14); border-radius: 24px; padding: 20px; margin-top: 18px; }
+    .lbl { margin: 0; color: var(--on-brand-soft); font-size: .875rem; }
+    .saldo-val { margin: 2px 0 0; font-size: 2.5rem; line-height: 1.1; font-weight: 800; letter-spacing: -.02em; }
+    .cuenta-sub { margin: 6px 0 16px; color: var(--on-brand-soft); font-size: .875rem; }
+    .movs > div { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+    .movs > div:last-child { border-bottom: 0; }
+    .av { flex: none; width: 44px; height: 44px; border-radius: 50%; display: block; }
+    .av.grande { width: 56px; height: 56px; }
+    .mov-dat { flex: 1; min-width: 0; }
+    .mov-n { font-weight: 600; }
+    .mov-f { font-size: .875rem; color: var(--muted); }
+    .monto-mov { font-weight: 700; white-space: nowrap; }
+    .pos { color: var(--ok); } .neg { color: var(--error); }
+
+    .btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; min-height: 56px; padding: .75rem 1.25rem; border-radius: 18px; border: 2px solid transparent; font-weight: 700; font-size: 1rem; cursor: pointer; user-select: none; }
+    .btn-primario { background: var(--btn); color: #fff; border-color: var(--btn); }
+    .btn-claro { background: #fff; color: var(--btn); }
+    .btn-sec { background: #fff; color: var(--btn); border-color: var(--btn); margin-top: 12px; }
+
+    .campo { margin-bottom: 20px; }
+    .tit-sec { font-weight: 700; margin-bottom: 10px; }
+    .input { width: 100%; font: inherit; min-height: 56px; padding: .75rem 1rem; border: 2px solid var(--field); border-radius: 14px; background: #fff; color: var(--ink); }
+    .input::placeholder { color: #c4c5d8; }
+    .rojo { border-color: var(--error) !important; background: var(--error-bg) !important; }
+
+    .contacto { display: flex; align-items: center; gap: 12px; min-height: 68px; padding: 10px 14px; border: 2px solid var(--line); border-radius: 18px; background: #fff; cursor: pointer; margin-bottom: 10px; }
+    .contacto.sel { border-color: var(--brand); background: var(--brand-tint); }
+    .contacto .radio { order: 3; flex: none; width: 24px; height: 24px; border-radius: 50%; border: 2px solid #b9bad0; background: #fff; }
+    .contacto.sel .radio { border: 7px solid var(--brand); }
+    .c-dat { flex: 1; }
+    .c-n { font-weight: 600; } .c-c { font-size: .875rem; color: var(--muted); }
+
+    .monto-caja { background: var(--brand-tint); border-radius: 24px; padding: 18px 16px 16px; text-align: center; }
+    .monto-fila { display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .monto-fila .peso { font-size: 2.5rem; font-weight: 800; color: var(--brand-d); }
+    .monto-fila .input { width: 10ch; max-width: 100%; text-align: center; font-size: 2.25rem; font-weight: 800; min-height: 64px; color: var(--brand-d); }
+    .monto-fila .input::placeholder { font-size: 1rem; font-weight: 500; }
+
+    .ficha { background: var(--brand-tint); border-radius: 24px; padding: 20px; margin-bottom: 20px; }
+    .ficha-dest { display: flex; align-items: center; gap: 14px; }
+    .monto-grande { margin: 16px 0 4px; text-align: center; font-size: 2.5rem; font-weight: 800; color: var(--brand-d); letter-spacing: -.02em; }
+    .fila { display: flex; justify-content: space-between; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+    .fila:last-child { border-bottom: 0; }
+    .fila > div:first-child { color: var(--muted); }
+    .fila > div:last-child { font-weight: 600; text-align: right; }
+    .exito { text-align: center; }
+    .check { width: 88px; height: 88px; margin: 0 auto 16px; display: block; }
+    .comprobante { border: 2px dashed #d3d4e4; border-radius: 20px; padding: 4px 18px; margin-bottom: 20px; }
+    .comprobante .fila { padding: 10px 0; }
+
+    .toast { position: absolute; z-index: 40; bottom: 24px; left: 50%; transform: translateX(-50%); background: #f26b63; color: #ffe9e7; padding: .5rem 1.25rem; border-radius: 20px; font-size: .8125rem; display: none; }
+    .pie { text-align: center; padding: 12px 20px 24px; font-size: .875rem; color: var(--muted); cursor: pointer; }
   </style>
 </head>
 <body>
-  <div class="header">Banco Demo</div>
+<div class="stage">
+<div class="phone">
+<div class="toast" id="toast"></div>
+<div class="screen" id="screen">
+
+  <div class="top">
+    <div class="marca">
+      <img id="logo" width="32" height="32" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='white'/%3E%3Cpath d='M9 13h13m0 0-4-4m4 4-4 4M23 19H10m0 0 4-4m-4 4 4 4' stroke='%233a2fe0' stroke-width='2.2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+      Banco Demo
+    </div>
+    <div class="yo">JG</div>
+  </div>
 
   <div class="main">
-    <div class="pasos"><div class="on" id="b1"></div><div id="b2"></div><div id="b3"></div></div>
+
+    <!-- INICIO -->
+    <div class="vista" id="s0">
+      <div class="hero">
+        <div class="titulo">Hola, Jorge</div>
+        <div class="sub-hero">Este es el resumen de tu cuenta.</div>
+        <div class="saldo-card">
+          <div class="lbl">Saldo total</div>
+          <div class="saldo-val" id="saldo"></div>
+          <div class="cuenta-sub">Cuenta corriente terminada en 4821</div>
+          <div class="btn btn-claro" onclick="ir(1)">
+            <svg width="20" height="20" viewBox="0 0 24 24"><path d="M7 17 17 7M9 7h8v8" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Transferir
+          </div>
+        </div>
+      </div>
+      <div class="sheet">
+        <div class="h2">Últimos movimientos</div>
+        <div class="movs" id="movs"></div>
+      </div>
+    </div>
 
     <!-- PASO 1 -->
-    <div id="s1">
-      <div class="titulo">Transferir dinero</div>
-      <div class="tarjeta">
-        <div class="saldo">Saldo <b>$1.250.000</b></div>
-
-        <div class="select" id="sel" onclick="toggle()"><span id="selTxt">Destinatario</span><span class="x">▼</span></div>
-        <div class="opciones" id="ops">
-          <div onclick="pick(this)">María González ••4821</div>
-          <div onclick="pick(this)">Juan Pérez ••1934</div>
-          <div onclick="pick(this)">Ana Rojas ••7710</div>
+    <div class="vista" id="s1" style="display:none">
+      <div class="hero">
+        <div class="hero-fila">
+          <div class="atras" onclick="ir(0)"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="titulo">Transferir dinero</div>
+        </div>
+        <div class="pasos"><div class="on">1. Datos</div><div>2. Confirmar</div><div>3. Listo</div></div>
+      </div>
+      <div class="sheet">
+        <div class="campo">
+          <div class="tit-sec">Destinatario</div>
+          <div class="contacto" id="k-mg" onclick="pick('mg')"><img class="av" data-av="MG|e3e1ff|2a20b8"><div class="c-dat"><div class="c-n">María González</div><div class="c-c">Cuenta corriente ••4821</div></div><div class="radio"></div></div>
+          <div class="contacto" id="k-jp" onclick="pick('jp')"><img class="av" data-av="JP|d3f6e8|0a5c35"><div class="c-dat"><div class="c-n">Juan Pérez</div><div class="c-c">Cuenta vista ••1934</div></div><div class="radio"></div></div>
+          <div class="contacto" id="k-ar" onclick="pick('ar')"><img class="av" data-av="AR|ffe4d3|8f3500"><div class="c-dat"><div class="c-n">Ana Rojas</div><div class="c-c">Cuenta RUT ••7710</div></div><div class="radio"></div></div>
         </div>
 
-        <input class="input" id="m" placeholder="Monto">
-        <input class="input" id="msg" placeholder="Mensaje">
+        <div class="campo monto-caja" id="caja-monto">
+          <div class="monto-fila"><div class="peso">$</div><input class="input" id="m" placeholder="Monto"></div>
+        </div>
 
-        <div class="btn" onclick="seguir()">Continuar</div>
+        <div class="campo"><input class="input" id="msg" placeholder="Mensaje (opcional)"></div>
+
+        <div class="btn btn-primario" onclick="seguir()">Continuar</div>
       </div>
     </div>
 
     <!-- PASO 2 -->
-    <div id="s2" style="display:none">
-      <div class="titulo">Confirmar</div>
-      <div class="tarjeta">
-        <div class="fila"><span>Para</span><span id="cd"></span></div>
-        <div class="fila"><span>Monto</span><span id="cm"></span></div>
-        <div class="fila"><span>Msj</span><span id="cs"></span></div>
-        <br>
-        <div class="btn" onclick="confirmar()">OK</div>
-        <div class="link" onclick="ir(1)">volver</div>
+    <div class="vista" id="s2" style="display:none">
+      <div class="hero">
+        <div class="hero-fila">
+          <div class="atras" onclick="ir(1)"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="titulo">Confirma tu transferencia</div>
+        </div>
+        <div class="pasos"><div class="hecho">1. Datos</div><div class="on">2. Confirmar</div><div>3. Listo</div></div>
+      </div>
+      <div class="sheet">
+        <div class="ficha">
+          <div class="ficha-dest">
+            <img class="av grande" id="c-av">
+            <div><b id="c-nombre"></b><br><span id="c-cuenta" style="color:var(--muted);font-size:.875rem"></span></div>
+          </div>
+          <div class="monto-grande" id="c-monto-grande"></div>
+        </div>
+        <div class="fila"><div>Destinatario</div><div id="cd"></div></div>
+        <div class="fila"><div>Monto</div><div id="cm"></div></div>
+        <div class="fila"><div>Desde</div><div>Cuenta corriente ••4821</div></div>
+        <div class="fila"><div>Comisión</div><div>$0</div></div>
+        <div class="fila"><div>Mensaje</div><div id="cs"></div></div>
+        <div style="margin-top:20px">
+          <div class="btn btn-primario" onclick="confirmar()">Confirmar y transferir</div>
+          <div class="btn btn-sec" onclick="ir(1)">Volver y editar datos</div>
+        </div>
       </div>
     </div>
 
     <!-- PASO 3 -->
-    <div id="s3" style="display:none">
-      <div class="tarjeta ok">
-        <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><circle cx='32' cy='32' r='30' fill='%230f6b2f'/><path d='M19 33l9 9 18-19' stroke='white' stroke-width='6' fill='none'/></svg>">
-        <div class="titulo">¡Listo!</div>
-        <div id="txt"></div>
-        <br>
-        <div class="btn" onclick="location.reload()">Nueva</div>
+    <div class="vista" id="s3" style="display:none">
+      <div class="hero exito">
+        <img class="check" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 88 88'%3E%3Ccircle cx='44' cy='44' r='42' fill='%23ffffff'/%3E%3Cpath d='M26 45l12 12 24-26' stroke='%233a2fe0' stroke-width='7' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+        <div class="titulo">Transferencia realizada con éxito</div>
+        <div class="pasos"><div class="hecho">1. Datos</div><div class="hecho">2. Confirmar</div><div class="on">3. Listo</div></div>
+      </div>
+      <div class="sheet">
+        <div id="txt" style="margin-bottom:16px"></div>
+        <div class="h2">Comprobante</div>
+        <div class="comprobante">
+          <div class="fila"><div>Monto</div><div id="r-monto"></div></div>
+          <div class="fila"><div>Destinatario</div><div id="r-dest"></div></div>
+          <div class="fila"><div>Fecha</div><div id="r-fecha"></div></div>
+          <div class="fila"><div>N.º de comprobante</div><div id="r-comp"></div></div>
+        </div>
+        <div class="btn btn-primario" onclick="reiniciar(0)">Volver al inicio</div>
+        <div class="btn btn-sec" onclick="reiniciar(1)">Hacer otra transferencia</div>
       </div>
     </div>
   </div>
 
-  <div class="toast" id="toast"></div>
-  <div class="foot" onclick="location.href='/'">inicio</div>
+  <div class="pie" onclick="location.href='/'">Volver a la portada de la prueba</div>
+</div>
+</div>
+</div>
 
-  <script>
-    var dest = "";
-    function toggle() { var o = document.getElementById("ops"); o.style.display = o.style.display === "block" ? "none" : "block"; }
-    function pick(el) { dest = el.textContent; document.getElementById("selTxt").textContent = dest; document.getElementById("selTxt").style.color = "#999"; toggle(); document.getElementById("sel").classList.remove("rojo"); }
-    function ir(n) {
-      for (var i = 1; i <= 3; i++) {
-        document.getElementById("s" + i).style.display = i === n ? "block" : "none";
-        document.getElementById("b" + i).className = i <= n ? "on" : "";
-      }
+<script>
+  var CONT = {
+    mg: { n: "María González", c: "Cuenta corriente ••4821", i: "MG", k: 0 },
+    jp: { n: "Juan Pérez", c: "Cuenta vista ••1934", i: "JP", k: 1 },
+    ar: { n: "Ana Rojas", c: "Cuenta RUT ••7710", i: "AR", k: 2 }
+  };
+  var AV = [["e3e1ff", "2a20b8"], ["d3f6e8", "0a5c35"], ["ffe4d3", "8f3500"], ["ffe9b8", "6b4a00"], ["e8e9f5", "3a3c5e"]];
+  var MOVS = [
+    { n: "Sueldo Empresa Andes", f: "Hoy, 09:12", m: 850000, i: "EA", k: 0 },
+    { n: "Supermercado Central", f: "Ayer, 19:40", m: -38450, i: "SC", k: 3 },
+    { n: "Juan Pérez", f: "17 nov", m: -25000, i: "JP", k: 1 },
+    { n: "Streaming Plus", f: "15 nov", m: -9990, i: "SP", k: 4 }
+  ];
+  var saldo = 1250000, dest = "", $ = function (id) { return document.getElementById(id); };
+  function fmt(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, "."); }
+  // Avatares como <img> sin alt
+  function avSrc(t, bg, fg) {
+    return "data:image/svg+xml," + encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 44'><circle cx='22' cy='22' r='22' fill='#" + bg + "'/><text x='22' y='27' font-family='Arial' font-weight='700' font-size='14' text-anchor='middle' fill='#" + fg + "'>" + t + "</text></svg>");
+  }
+  function pintarAv() {
+    var imgs = document.querySelectorAll("img[data-av]");
+    for (var i = 0; i < imgs.length; i++) { var p = imgs[i].getAttribute("data-av").split("|"); imgs[i].src = avSrc(p[0], p[1], p[2]); }
+  }
+  function pintarInicio() {
+    $("saldo").textContent = "$" + fmt(saldo);
+    var h = "";
+    for (var i = 0; i < MOVS.length; i++) {
+      var x = MOVS[i], pos = x.m > 0;
+      h += "<div><img class='av' src='" + avSrc(x.i, AV[x.k][0], AV[x.k][1]) + "'><div class='mov-dat'><div class='mov-n'>" + x.n + "</div><div class='mov-f'>" + x.f + "</div></div><div class='monto-mov " + (pos ? "pos" : "neg") + "'>" + (pos ? "+" : "−") + "$" + fmt(Math.abs(x.m)) + "</div></div>";
     }
-    function toast(t) { var el = document.getElementById("toast"); el.textContent = t; el.style.display = "block"; setTimeout(function () { el.style.display = "none"; }, 1500); }
-    function seguir() {
-      var m = document.getElementById("m").value;
-      var mal = false;
-      document.getElementById("sel").classList.remove("rojo");
-      document.getElementById("m").classList.remove("rojo");
-      if (!dest) { document.getElementById("sel").classList.add("rojo"); mal = true; }
-      if (!m || isNaN(m) || Number(m) <= 0 || Number(m) > 1250000) { document.getElementById("m").classList.add("rojo"); mal = true; }
-      if (mal) { toast("Error"); return; }
-      document.getElementById("cd").textContent = dest;
-      document.getElementById("cm").textContent = "$" + Number(m).toLocaleString("es-CL");
-      document.getElementById("cs").textContent = document.getElementById("msg").value || "-";
-      ir(2);
-    }
-    function confirmar() {
-      setTimeout(function () {
-        document.getElementById("txt").textContent = "Enviaste $" + Number(document.getElementById("m").value).toLocaleString("es-CL") + " a " + dest;
-        ir(3);
-      }, 1200);
-    }
-  </script>
+    $("movs").innerHTML = h;
+  }
+  function ir(n) {
+    for (var i = 0; i <= 3; i++) $("s" + i).style.display = i === n ? "flex" : "none";
+    $("screen").scrollTop = 0; window.scrollTo(0, 0);
+  }
+  function toast(t) { var el = $("toast"); el.textContent = t; el.style.display = "block"; setTimeout(function () { el.style.display = "none"; }, 1500); }
+  function pick(k) {
+    dest = k;
+    ["mg", "jp", "ar"].forEach(function (x) { $("k-" + x).className = "contacto" + (x === k ? " sel" : ""); });
+  }
+  function seguir() {
+    var m = $("m").value, mal = false;
+    ["mg", "jp", "ar"].forEach(function (x) { $("k-" + x).classList.remove("rojo"); });
+    $("m").classList.remove("rojo");
+    if (!dest) { ["mg", "jp", "ar"].forEach(function (x) { $("k-" + x).classList.add("rojo"); }); mal = true; }
+    if (!m || isNaN(m) || Number(m) <= 0 || Number(m) > saldo) { $("m").classList.add("rojo"); mal = true; }
+    if (mal) { toast("Error"); return; }
+    var c = CONT[dest];
+    $("c-av").src = avSrc(c.i, AV[c.k][0], AV[c.k][1]);
+    $("c-nombre").textContent = c.n; $("c-cuenta").textContent = c.c;
+    $("c-monto-grande").textContent = "$" + fmt(Number(m));
+    $("cd").textContent = c.n; $("cm").textContent = "$" + fmt(Number(m));
+    $("cs").textContent = $("msg").value || "-";
+    ir(2);
+  }
+  function confirmar() {
+    setTimeout(function () {
+      var c = CONT[dest], m = Number($("m").value);
+      saldo -= m;
+      MOVS.unshift({ n: c.n, f: "Hoy", m: -m, i: c.i, k: c.k });
+      pintarInicio();
+      $("txt").textContent = "Enviaste $" + fmt(m) + " a " + c.n + ".";
+      $("r-monto").textContent = "$" + fmt(m); $("r-dest").textContent = c.n;
+      $("r-fecha").textContent = new Date().toLocaleDateString("es-CL", { day: "numeric", month: "long", year: "numeric" });
+      $("r-comp").textContent = String(Math.floor(10000000 + Math.random() * 89999999));
+      ir(3);
+    }, 1200);
+  }
+  function reiniciar(n) {
+    dest = ""; $("m").value = ""; $("msg").value = "";
+    ["mg", "jp", "ar"].forEach(function (x) { $("k-" + x).className = "contacto"; });
+    ir(n);
+  }
+  pintarAv(); pintarInicio();
+</script>
 </body>
 </html>
